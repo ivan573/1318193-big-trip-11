@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ivan Privalov](https://up.htmlacademy.ru/ecmascript/11/user/1318193).
-* Наставник: `Неизвестно`.
+* Наставник: [Василиса Медведенко](https://htmlacademy.ru/profile/id1268845).
 
 ---
 
