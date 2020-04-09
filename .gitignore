@@ -12,3 +12,9 @@ Thumbs.db
 node_modules/
 
 # Файлы сборки (допишите самостоятельно)
+Contributing.md
+Readme.md
+.eslintrc.yml
+webpack.config.js
+package.json
+package-lock.json
