@@ -98,6 +98,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventFormTemplate", function() { return createEventFormTemplate; });
 const createEventFormTemplate = () => {
   return (
+    /* html */
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -463,34 +464,84 @@ const createTripEventsList = () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsTemplate", function() { return createTripEventsTemplate; });
-const createTripEventsTemplate = () => {
+const NUMBER_OF_CHARACTERS_TO_REMOVE = 3; // я не придумал как сделать это элегантнее, чтобы получалось как в разметке
+
+const MILLISECONDS_IN_A_SECOND = 1000;
+const SECONDS_IN_A_MINUTE = 60;
+const MINUTES_IN_AN_HOUR = 60;
+
+const getEventTitle = (event) => {
+  let preposition;
+
+  switch (event.type) {
+    case `Check-in`:
+    case `Sightseeing`:
+    case `Restaurant`:
+      preposition = `in`;
+      break;
+    default:
+      preposition = `to`;
+      break;
+  }
+
+  return `${event.type} ${preposition} ${event.destination}`;
+};
+
+const getFullDate = (date) => {
+  const string = date.toISOString();
+  return string.slice(0, string.indexOf(`.`) - NUMBER_OF_CHARACTERS_TO_REMOVE); // без вычитания возвращает еще и секунды
+};
+
+const getTime = (date) => {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  return `${hours}:${minutes.toString().length < 2 ? `0` + minutes : minutes}`;
+};
+
+const getDuration = (start, end) => {
+  const duration = (end - start);
+  const minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+  if (minutes <= 60) {
+    return minutes + `M`;
+  } else {
+    const hours = Math.floor(minutes / MINUTES_IN_AN_HOUR);
+    minutes = minutes % MINUTES_IN_AN_HOUR;
+    return hours + `H ` + minutes + `M`;
+  }
+};
+
+const createTripEventsTemplate = (event) => {
+  const {type, /* destination, */ startDate, endDate, cost, extraOffers /* , info */} = event;
+
   return (
+    /* html */
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">Taxi to Amsterdam</h3>
+        <h3 class="event__title">${getEventTitle(event)}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="${getFullDate(startDate)}">${getTime(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="${getFullDate(endDate)}">${getTime(endDate)}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${getDuration(startDate, endDate)}</p>
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${cost}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
+            <span class="event__offer-title">${extraOffers[0].title}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">20</span>
+            &euro;&nbsp;<span class="event__offer-price">${extraOffers[0].price}</span>
           </li>
         </ul>
 
@@ -501,6 +552,34 @@ const createTripEventsTemplate = () => {
     </li>`
   );
 };
+
+
+
+
+/***/ }),
+
+/***/ "./src/const.js":
+/*!**********************!*\
+  !*** ./src/const.js ***!
+  \**********************/
+/*! exports provided: EVENT_TYPES */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_TYPES", function() { return EVENT_TYPES; });
+const EVENT_TYPES = [
+  `Taxi`,
+  `Bus`,
+  `Train`,
+  `Ship`,
+  `Transport`,
+  `Drive`,
+  `Flight`,
+  `Check-in`,
+  `Sightseeing`,
+  `Restaurant`
+];
 
 
 
@@ -523,7 +602,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_event_form_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/event-form.js */ "./src/components/event-form.js");
 /* harmony import */ var _components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/trip-events-list.js */ "./src/components/trip-events-list.js");
 /* harmony import */ var _components_trip_events_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/trip-events.js */ "./src/components/trip-events.js");
-const POINT_COUNT = 3;
+/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./mock/trip-events.js */ "./src/mock/trip-events.js");
+const POINT_COUNT = 15;
 
 
 
@@ -532,6 +612,10 @@ const POINT_COUNT = 3;
 
 
 
+
+
+
+const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_7__["generateEvents"])(POINT_COUNT);
 
 const render = (container, template, place = `afterbegin`) => {
   container.insertAdjacentHTML(place, template);
@@ -555,9 +639,107 @@ render(tripEventsElement, Object(_components_trip_events_list_js__WEBPACK_IMPORT
 
 const tripPointsElement = document.querySelector(`.trip-events__list`);
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripPointsElement, Object(_components_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["createTripEventsTemplate"])(), `afterbegin`);
-}
+tripEvents.forEach((event) => render(tripPointsElement, Object(_components_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["createTripEventsTemplate"])(event), `afterbegin`));
+// for (let i = 0; i < POINT_COUNT; i++) {
+//   render(tripPointsElement, createTripEventsTemplate(), `afterbegin`);
+// }
+
+
+/***/ }),
+
+/***/ "./src/mock/trip-events.js":
+/*!*********************************!*\
+  !*** ./src/mock/trip-events.js ***!
+  \*********************************/
+/*! exports provided: generateEvents */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateEvents", function() { return generateEvents; });
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+
+
+const MINUTES_INCREMENT = 5;
+const COST_INCREMENT = 10;
+const MAX_SENTENCES = 5;
+
+const destinations = [
+  `Amsterdam`,
+  `Geneva`,
+  `Chamonix`,
+  `Saint Petersburg`
+];
+
+const descriptionSentences = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra.`,
+  `Aliquam id orci ut lectus varius viverra.`,
+  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
+  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
+  `Aliquam erat volutpat.`,
+  `Nunc fermentum tortor ac porta dapibus.`,
+  `In rutrum ac purus sit amet tempus.`
+];
+
+const getRandomArrayElement = (array) => {
+  return array[Math.floor(Math.random() * array.length)];
+};
+
+const getRandomDate = (date = new Date()) => {
+  const targetDate = date;
+  const targetDateMinutes = targetDate.getMinutes();
+
+  const currentMinutes = targetDateMinutes % 5 !== 0 ?
+    Math.floor(targetDateMinutes / MINUTES_INCREMENT) * MINUTES_INCREMENT : targetDateMinutes;
+
+  const minutesToAdd = Math.ceil(Math.random() * 24) * MINUTES_INCREMENT; // 5 minutes-2 hours
+
+  targetDate.setMinutes(currentMinutes + minutesToAdd);
+
+  return targetDate;
+};
+
+const getRandomDescription = () => {
+  const description = descriptionSentences.slice();
+
+  while (description.length > Math.ceil(Math.random() * MAX_SENTENCES)) {
+    description.splice(Math.floor(Math.random * descriptionSentences.length), 1);
+  }
+
+  return description.join(` `);
+};
+
+const generateEvent = () => {
+  const date = getRandomDate();
+
+  return {
+    type: getRandomArrayElement(_const_js__WEBPACK_IMPORTED_MODULE_0__["EVENT_TYPES"]),
+    destination: getRandomArrayElement(destinations),
+    startDate: date,
+    endDate: getRandomDate(date),
+    cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
+    extraOffers: [
+      {
+        title: `Order Uber`,
+        price: 20
+      }
+    ],
+    info: {
+      description: getRandomDescription(),
+      photos: `http://picsum.photos/248/152?r=${Math.random()}`
+    }
+  };
+};
+
+const generateEvents = (count) => {
+  return new Array(count).fill(``).map(generateEvent);
+};
+
+
 
 
 /***/ })
