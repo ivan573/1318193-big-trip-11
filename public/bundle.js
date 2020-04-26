@@ -96,7 +96,11 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventFormTemplate", function() { return createEventFormTemplate; });
-const createEventFormTemplate = () => {
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+
+
+const createEventFormTemplate = (event) => {
+  const {type, destination, startDate, endDate, cost, /* extraOffers , */ info} = event;
   return (
     /* html */
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -104,7 +108,7 @@ const createEventFormTemplate = () => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -171,9 +175,9 @@ const createEventFormTemplate = () => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight to
+              ${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatType"])(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -186,12 +190,12 @@ const createEventFormTemplate = () => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(startDate)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(endDate)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -199,7 +203,7 @@ const createEventFormTemplate = () => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -259,15 +263,15 @@ const createEventFormTemplate = () => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+            <p class="event__destination-description">${info.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
+                <img class="event__photo" src="${info.photos[0]}" alt="Event photo">
+                <!-- <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
                 <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
                 <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo"> -->
               </div>
             </div>
           </section>
@@ -293,6 +297,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createFiltersTemplate", function() { return createFiltersTemplate; });
 const createFiltersTemplate = () => {
   return (
+    /* html */
     `<div class="trip-main__trip-controls  trip-controls">
       <h2 class="visually-hidden">Switch trip view</h2>
       <nav class="trip-controls__trip-tabs  trip-tabs">
@@ -340,6 +345,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createMenuTemplate", function() { return createMenuTemplate; });
 const createMenuTemplate = () => {
   return (
+    /* html */
     `<nav class="trip-controls__trip-tabs  trip-tabs">
       <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
       <a class="trip-tabs__btn" href="#">Stats</a>
@@ -364,6 +370,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRouteAndCostTemplate", function() { return createRouteAndCostTemplate; });
 const createRouteAndCostTemplate = () => {
   return (
+    /* html */
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
@@ -395,6 +402,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSortingTemplate", function() { return createSortingTemplate; });
 const createSortingTemplate = () => {
   return (
+    /* html */
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day"></span>
 
@@ -431,20 +439,104 @@ const createSortingTemplate = () => {
 /*!********************************************!*\
   !*** ./src/components/trip-events-list.js ***!
   \********************************************/
-/*! exports provided: createTripEventsList */
+/*! exports provided: tripEvents, createTripEventsList */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsList", function() { return createTripEventsList; });
+/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mock/trip-events.js */ "./src/mock/trip-events.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+/* harmony import */ var _trip_events_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./trip-events.js */ "./src/components/trip-events.js");
+
+
+const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__["generateEvents"])(15);
+
+
+// import {tripEvents} from '../main.js';
+
+
+
+
+const generateCorrespodingEventsTemplate = ((events) => {
+  let template = ``;
+
+  events.forEach((it) => {
+    template += Object(_trip_events_js__WEBPACK_IMPORTED_MODULE_3__["createTripEventsTemplate"])(it) + `\n`;
+  });
+  return template;
+});
+
+const createTripDay = (day, month, year, index, events) => {
+
+  return (
+    /* html */
+    `<li class="trip-days__item  day">
+      <div class="day__info">
+        <span class="day__counter">${index + 1}</span>
+        <time class="day__date" datetime="${year}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(month)}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(day)}">${_const_js__WEBPACK_IMPORTED_MODULE_1__["MONTHS"][month]} ${day}</time>
+      </div>
+      <ul class="trip-events__list">
+        ${generateCorrespodingEventsTemplate(events)}
+      </ul>
+    </li>`);
+};
+
+const startDays = [];
+tripEvents.forEach((it) => {
+
+  startDays.push({
+    day: it.startDate.getDate(),
+    month: it.startDate.getMonth(),
+    year: it.startDate.getFullYear()
+  });
+});
+
+const uniqueDays = startDays.slice().filter((it, index, array) => {
+
+  return array.indexOf(it) === index; // !! не понимаю почему не работает indexOf
+});
+
+const isSameDate = (originalDate, checkedDate) => {
+
+  return originalDate.day === checkedDate.startDate.getDate() && originalDate.month === checkedDate.startDate.getMonth() && originalDate.year === checkedDate.startDate.getFullYear() ?
+    true : false;
+};
+
+const createTripDaysTemplate = () => {
+
+  let template = ``;
+  // костыль. slice почему-то тоже не работает.
+  for (let i = 0; i < 14; i++) {
+    uniqueDays.pop();
+  }
+
+  uniqueDays.forEach((day, index) => {
+
+    let correspondingEvents = [];
+
+    tripEvents.forEach((event) => {
+
+      if (isSameDate(day, event)) {
+        correspondingEvents.push(event);
+      }
+
+    });
+
+    template += createTripDay(day.day, day.month, day.year, index, correspondingEvents) + `\n`;
+  });
+
+  return template;
+};
+
+
 const createTripEventsList = () => {
   return (
+    /* html */
     `<ul class="trip-days">
-      <li class="trip-days__item  day">
-        <div class="day__info"></div>
-        <ul class="trip-events__list">
-        </ul>
-      </li>
+      ${createTripDaysTemplate()}
     </ul>`
   );
 };
@@ -464,52 +556,8 @@ const createTripEventsList = () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsTemplate", function() { return createTripEventsTemplate; });
-const NUMBER_OF_CHARACTERS_TO_REMOVE = 3; // я не придумал как сделать это элегантнее, чтобы получалось как в разметке
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
 
-const MILLISECONDS_IN_A_SECOND = 1000;
-const SECONDS_IN_A_MINUTE = 60;
-const MINUTES_IN_AN_HOUR = 60;
-
-const getEventTitle = (event) => {
-  let preposition;
-
-  switch (event.type) {
-    case `Check-in`:
-    case `Sightseeing`:
-    case `Restaurant`:
-      preposition = `in`;
-      break;
-    default:
-      preposition = `to`;
-      break;
-  }
-
-  return `${event.type} ${preposition} ${event.destination}`;
-};
-
-const getFullDate = (date) => {
-  const string = date.toISOString();
-  return string.slice(0, string.indexOf(`.`) - NUMBER_OF_CHARACTERS_TO_REMOVE); // без вычитания возвращает еще и секунды
-};
-
-const getTime = (date) => {
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-
-  return `${hours}:${minutes.toString().length < 2 ? `0` + minutes : minutes}`;
-};
-
-const getDuration = (start, end) => {
-  const duration = (end - start);
-  const minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
-  if (minutes <= 60) {
-    return minutes + `M`;
-  } else {
-    const hours = Math.floor(minutes / MINUTES_IN_AN_HOUR);
-    minutes = minutes % MINUTES_IN_AN_HOUR;
-    return hours + `H ` + minutes + `M`;
-  }
-};
 
 const createTripEventsTemplate = (event) => {
   const {type, /* destination, */ startDate, endDate, cost, extraOffers /* , info */} = event;
@@ -521,15 +569,15 @@ const createTripEventsTemplate = (event) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getEventTitle(event)}</h3>
+        <h3 class="event__title">${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getEventTitle"])(event)}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${getFullDate(startDate)}">${getTime(startDate)}</time>
+            <time class="event__start-time" datetime="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getFullDate"])(startDate)}">${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getTime"])(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${getFullDate(endDate)}">${getTime(endDate)}</time>
+            <time class="event__end-time" datetime="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getFullDate"])(endDate)}">${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getTime"])(endDate)}</time>
           </p>
-          <p class="event__duration">${getDuration(startDate, endDate)}</p>
+          <p class="event__duration">${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getDuration"])(startDate, endDate)}</p>
         </div>
 
         <p class="event__price">
@@ -562,12 +610,13 @@ const createTripEventsTemplate = (event) => {
 /*!**********************!*\
   !*** ./src/const.js ***!
   \**********************/
-/*! exports provided: EVENT_TYPES */
+/*! exports provided: EVENT_TYPES, MONTHS */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_TYPES", function() { return EVENT_TYPES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONTHS", function() { return MONTHS; });
 const EVENT_TYPES = [
   `Taxi`,
   `Bus`,
@@ -581,6 +630,21 @@ const EVENT_TYPES = [
   `Restaurant`
 ];
 
+const MONTHS = {
+  0: `JAN`,
+  1: `FEB`,
+  2: `MAR`,
+  3: `APR`,
+  4: `MAY`,
+  5: `JUN`,
+  6: `JUL`,
+  7: `AUG`,
+  8: `SEP`,
+  9: `OCT`,
+  10: `NOV`,
+  11: `DEC`
+};
+
 
 
 
@@ -590,19 +654,19 @@ const EVENT_TYPES = [
 /*!*********************!*\
   !*** ./src/main.js ***!
   \*********************/
-/*! no exports provided */
+/*! exports provided: tripEvents */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
 /* harmony import */ var _components_route_and_cost_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/route-and-cost.js */ "./src/components/route-and-cost.js");
 /* harmony import */ var _components_menu_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/menu.js */ "./src/components/menu.js");
 /* harmony import */ var _components_filters_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/filters.js */ "./src/components/filters.js");
 /* harmony import */ var _components_sorting_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/sorting.js */ "./src/components/sorting.js");
 /* harmony import */ var _components_event_form_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/event-form.js */ "./src/components/event-form.js");
 /* harmony import */ var _components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/trip-events-list.js */ "./src/components/trip-events-list.js");
-/* harmony import */ var _components_trip_events_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/trip-events.js */ "./src/components/trip-events.js");
-/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./mock/trip-events.js */ "./src/mock/trip-events.js");
+/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./mock/trip-events.js */ "./src/mock/trip-events.js");
 const POINT_COUNT = 15;
 
 
@@ -611,11 +675,14 @@ const POINT_COUNT = 15;
 
 
 
+// import {createTripEventsTemplate} from './components/trip-events.js';
 
 
 
 
-const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_7__["generateEvents"])(POINT_COUNT);
+const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvents"])(POINT_COUNT);
+
+const tripEvent = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvent"])();
 
 const render = (container, template, place = `afterbegin`) => {
   container.insertAdjacentHTML(place, template);
@@ -633,13 +700,16 @@ render(tripEventsElement.querySelector(`h2`), Object(_components_sorting_js__WEB
 
 const tripSortingElement = document.querySelector(`.trip-sort`);
 
-render(tripSortingElement, Object(_components_event_form_js__WEBPACK_IMPORTED_MODULE_4__["createEventFormTemplate"])(), `afterend`);
+render(tripSortingElement, Object(_components_event_form_js__WEBPACK_IMPORTED_MODULE_4__["createEventFormTemplate"])(tripEvent), `afterend`);
 
 render(tripEventsElement, Object(_components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__["createTripEventsList"])(), `beforeend`);
 
-const tripPointsElement = document.querySelector(`.trip-events__list`);
+// const tripPointsElement = document.querySelector(`.trip-events__list`);
 
-tripEvents.forEach((event) => render(tripPointsElement, Object(_components_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["createTripEventsTemplate"])(event), `afterbegin`));
+// еще тут очень странная штука, что почему-то точки маршрута рендерятся в обратном порядке. поэтому я пока как костыль прикрутил .reverse()
+
+// tripEvents.reverse().forEach((event) => render(tripPointsElement, createTripEventsTemplate(event)));
+
 // for (let i = 0; i < POINT_COUNT; i++) {
 //   render(tripPointsElement, createTripEventsTemplate(), `afterbegin`);
 // }
@@ -651,11 +721,12 @@ tripEvents.forEach((event) => render(tripPointsElement, Object(_components_trip_
 /*!*********************************!*\
   !*** ./src/mock/trip-events.js ***!
   \*********************************/
-/*! exports provided: generateEvents */
+/*! exports provided: generateEvent, generateEvents */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateEvent", function() { return generateEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateEvents", function() { return generateEvents; });
 /* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
 
@@ -720,7 +791,7 @@ const generateEvent = () => {
     type: getRandomArrayElement(_const_js__WEBPACK_IMPORTED_MODULE_0__["EVENT_TYPES"]),
     destination: getRandomArrayElement(destinations),
     startDate: date,
-    endDate: getRandomDate(date),
+    endDate: getRandomDate(date), // !! почему-то в итогде та же дата получается
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
@@ -729,14 +800,104 @@ const generateEvent = () => {
       }
     ],
     info: {
-      description: getRandomDescription(),
-      photos: `http://picsum.photos/248/152?r=${Math.random()}`
+      description: getRandomDescription().trim(),
+      photos: [`http://picsum.photos/248/152?r=${Math.random()}`]
     }
   };
 };
 
 const generateEvents = (count) => {
-  return new Array(count).fill(``).map(generateEvent);
+  return new Array(count).fill(``).map(generateEvent).sort((a, b) => {
+    return a.startDate - b.startDate;
+  });
+};
+
+
+
+
+/***/ }),
+
+/***/ "./src/utils.js":
+/*!**********************!*\
+  !*** ./src/utils.js ***!
+  \**********************/
+/*! exports provided: formatTime, formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTime", function() { return formatTime; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatType", function() { return formatType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEventTitle", function() { return getEventTitle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDate", function() { return formatDate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFullDate", function() { return getFullDate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTime", function() { return getTime; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDuration", function() { return getDuration; });
+const NUMBER_OF_CHARACTERS_TO_REMOVE = 3; // я не придумал как сделать это элегантнее, чтобы получалось как в разметке
+
+const MILLISECONDS_IN_A_SECOND = 1000;
+const SECONDS_IN_A_MINUTE = 60;
+const MINUTES_IN_AN_HOUR = 60;
+
+const formatTime = (time) => {
+  return time.toString().length > 1 ? time : `0` + time;
+};
+
+const formatType = (type) => {
+  let preposition;
+
+  switch (type) {
+    case `Check-in`:
+    case `Sightseeing`:
+    case `Restaurant`:
+      preposition = `in`;
+      break;
+    default:
+      preposition = `to`;
+      break;
+  }
+
+  return `${type} ${preposition}`;
+};
+
+const getEventTitle = (event) => {
+
+  return `${formatType(event.type)} ${event.destination}`;
+};
+
+const formatDate = (date) => {
+
+  const day = date.getDate();
+  const month = date.getMonth();
+  let year = date.getFullYear();
+  year = year.toString().slice(2, 4);
+  const hours = formatTime(date.getHours());
+  const minutes = formatTime(date.getMinutes());
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+};
+
+const getFullDate = (date) => {
+  const string = date.toISOString();
+  return string.slice(0, string.indexOf(`.`) - NUMBER_OF_CHARACTERS_TO_REMOVE); // без вычитания возвращает еще и секунды
+};
+
+const getTime = (date) => {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  return `${formatTime(hours)}:${formatTime(minutes)}`;
+};
+
+const getDuration = (start, end) => {
+  const duration = (end - start);
+  const minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+  if (minutes < MINUTES_IN_AN_HOUR) {
+    return minutes + `M`;
+  } else {
+    const hours = Math.floor(minutes / MINUTES_IN_AN_HOUR);
+    minutes = minutes % MINUTES_IN_AN_HOUR;
+    return hours + `H ` + minutes + `M`;
+  }
 };
 
 

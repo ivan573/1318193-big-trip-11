@@ -60,7 +60,7 @@ const generateEvent = () => {
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
     startDate: date,
-    endDate: getRandomDate(date),
+    endDate: getRandomDate(date), // !! почему-то в итогде та же дата получается
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
@@ -69,14 +69,16 @@ const generateEvent = () => {
       }
     ],
     info: {
-      description: getRandomDescription(),
-      photos: `http://picsum.photos/248/152?r=${Math.random()}`
+      description: getRandomDescription().trim(),
+      photos: [`http://picsum.photos/248/152?r=${Math.random()}`]
     }
   };
 };
 
 const generateEvents = (count) => {
-  return new Array(count).fill(``).map(generateEvent);
+  return new Array(count).fill(``).map(generateEvent).sort((a, b) => {
+    return a.startDate - b.startDate;
+  });
 };
 
-export {generateEvents};
+export {generateEvent, generateEvents};
