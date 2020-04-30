@@ -1,7 +1,21 @@
 import {getEventTitle, getFullDate, getTime, getDuration} from '../utils.js';
 
+const createOffersTemplate = (offers) => {
+  let template = ``;
+  offers.forEach((it) => (
+    template +=
+    /* html */
+    `<li class="event__offer">
+      <span class="event__offer-title">${it.title}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+    </li>` + `\n`
+  ));
+  return template;
+};
+
 const createTripEventsTemplate = (event) => {
-  const {type, /* destination, */ startDate, endDate, cost, extraOffers /* , info */} = event;
+  const {type, startDate, endDate, cost, extraOffers} = event;
 
   return (
     /* html */
@@ -27,11 +41,7 @@ const createTripEventsTemplate = (event) => {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">${extraOffers[0].title}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${extraOffers[0].price}</span>
-          </li>
+          ${createOffersTemplate(extraOffers)}
         </ul>
 
         <button class="event__rollup-btn" type="button">

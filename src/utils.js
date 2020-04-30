@@ -34,8 +34,7 @@ const formatDate = (date) => {
 
   const day = date.getDate();
   const month = date.getMonth();
-  let year = date.getFullYear();
-  year = year.toString().slice(2, 4);
+  const year = date.getFullYear().toString().slice(2, 4);
   const hours = formatTime(date.getHours());
   const minutes = formatTime(date.getMinutes());
   return `${day}/${month}/${year} ${hours}:${minutes}`;

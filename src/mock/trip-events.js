@@ -44,23 +44,25 @@ const getRandomDate = (date = new Date()) => {
 };
 
 const getRandomDescription = () => {
-  const description = descriptionSentences.slice();
 
-  while (description.length > Math.ceil(Math.random() * MAX_SENTENCES)) {
-    description.splice(Math.floor(Math.random * descriptionSentences.length), 1);
-  }
+  let description = new Array(Math.ceil(Math.random() * MAX_SENTENCES));
+  description.fill(``);
+
+  description = description.map(() => {
+    return descriptionSentences[Math.round(Math.random() * descriptionSentences.length - 1)];
+  });
 
   return description.join(` `);
 };
 
 const generateEvent = () => {
-  const date = getRandomDate();
+  const startDate = getRandomDate();
 
   return {
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
-    startDate: date,
-    endDate: getRandomDate(date), // !! почему-то в итогде та же дата получается
+    startDate,
+    endDate: getRandomDate(startDate), // !! почему-то в итогде та же дата получается
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {

@@ -1,9 +1,7 @@
 import {generateEvents} from '../mock/trip-events.js';
 
 const tripEvents = generateEvents(15);
-export {tripEvents};
 
-// import {tripEvents} from '../main.js';
 import {MONTHS} from '../const.js';
 import {formatTime} from '../utils.js';
 import {createTripEventsTemplate} from './trip-events.js';
@@ -32,19 +30,22 @@ const createTripDay = (day, month, year, index, events) => {
     </li>`);
 };
 
-const startDays = [];
-tripEvents.forEach((it) => {
-
-  startDays.push({
-    day: it.startDate.getDate(),
-    month: it.startDate.getMonth(),
-    year: it.startDate.getFullYear()
-  });
+const uniqueEvents = tripEvents.filter((it, index, array) => {
+  if (index === 0) {
+    return true;
+  } else {
+    return (it.toString() !== array[0].toString());
+  }
 });
 
-const uniqueDays = startDays.slice().filter((it, index, array) => {
-
-  return array.indexOf(it) === index; // !! не понимаю почему не работает indexOf
+const uniqueDays = new Set();
+uniqueEvents.forEach((it, index) => {
+  uniqueDays.add({
+    day: it.startDate.getDate(),
+    month: it.startDate.getMonth(),
+    year: it.startDate.getFullYear(),
+    dateIndex: index
+  });
 });
 
 const isSameDate = (originalDate, checkedDate) => {
@@ -56,12 +57,8 @@ const isSameDate = (originalDate, checkedDate) => {
 const createTripDaysTemplate = () => {
 
   let template = ``;
-  // костыль. slice почему-то тоже не работает.
-  for (let i = 0; i < 14; i++) {
-    uniqueDays.pop();
-  }
 
-  uniqueDays.forEach((day, index) => {
+  uniqueDays.forEach((day) => {
 
     let correspondingEvents = [];
 
@@ -73,7 +70,7 @@ const createTripDaysTemplate = () => {
 
     });
 
-    template += createTripDay(day.day, day.month, day.year, index, correspondingEvents) + `\n`;
+    template += createTripDay(day.day, day.month, day.year, day.dateIndex, correspondingEvents) + `\n`;
   });
 
   return template;
@@ -90,3 +87,4 @@ const createTripEventsList = () => {
 };
 
 export {createTripEventsList};
+export {tripEvents};

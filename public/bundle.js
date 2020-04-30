@@ -100,7 +100,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const createEventFormTemplate = (event) => {
-  const {type, destination, startDate, endDate, cost, /* extraOffers , */ info} = event;
+  const {type, destination, startDate, endDate, cost, info} = event;
   return (
     /* html */
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -108,7 +108,7 @@ const createEventFormTemplate = (event) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -439,13 +439,13 @@ const createSortingTemplate = () => {
 /*!********************************************!*\
   !*** ./src/components/trip-events-list.js ***!
   \********************************************/
-/*! exports provided: tripEvents, createTripEventsList */
+/*! exports provided: createTripEventsList, tripEvents */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsList", function() { return createTripEventsList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
 /* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mock/trip-events.js */ "./src/mock/trip-events.js");
 /* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
@@ -454,8 +454,6 @@ __webpack_require__.r(__webpack_exports__);
 
 const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__["generateEvents"])(15);
 
-
-// import {tripEvents} from '../main.js';
 
 
 
@@ -484,19 +482,22 @@ const createTripDay = (day, month, year, index, events) => {
     </li>`);
 };
 
-const startDays = [];
-tripEvents.forEach((it) => {
-
-  startDays.push({
-    day: it.startDate.getDate(),
-    month: it.startDate.getMonth(),
-    year: it.startDate.getFullYear()
-  });
+const uniqueEvents = tripEvents.filter((it, index, array) => {
+  if (index === 0) {
+    return true;
+  } else {
+    return (it.toString() !== array[0].toString());
+  }
 });
 
-const uniqueDays = startDays.slice().filter((it, index, array) => {
-
-  return array.indexOf(it) === index; // !! не понимаю почему не работает indexOf
+const uniqueDays = new Set();
+uniqueEvents.forEach((it, index) => {
+  uniqueDays.add({
+    day: it.startDate.getDate(),
+    month: it.startDate.getMonth(),
+    year: it.startDate.getFullYear(),
+    dateIndex: index
+  });
 });
 
 const isSameDate = (originalDate, checkedDate) => {
@@ -508,12 +509,8 @@ const isSameDate = (originalDate, checkedDate) => {
 const createTripDaysTemplate = () => {
 
   let template = ``;
-  // костыль. slice почему-то тоже не работает.
-  for (let i = 0; i < 14; i++) {
-    uniqueDays.pop();
-  }
 
-  uniqueDays.forEach((day, index) => {
+  uniqueDays.forEach((day) => {
 
     let correspondingEvents = [];
 
@@ -525,7 +522,7 @@ const createTripDaysTemplate = () => {
 
     });
 
-    template += createTripDay(day.day, day.month, day.year, index, correspondingEvents) + `\n`;
+    template += createTripDay(day.day, day.month, day.year, day.dateIndex, correspondingEvents) + `\n`;
   });
 
   return template;
@@ -540,6 +537,7 @@ const createTripEventsList = () => {
     </ul>`
   );
 };
+
 
 
 
@@ -559,8 +557,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
 
 
+const createOffersTemplate = (offers) => {
+  let template = ``;
+  offers.forEach((it) => (
+    template +=
+    /* html */
+    `<li class="event__offer">
+      <span class="event__offer-title">${it.title}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+    </li>` + `\n`
+  ));
+  return template;
+};
+
 const createTripEventsTemplate = (event) => {
-  const {type, /* destination, */ startDate, endDate, cost, extraOffers /* , info */} = event;
+  const {type, startDate, endDate, cost, extraOffers} = event;
 
   return (
     /* html */
@@ -586,11 +598,7 @@ const createTripEventsTemplate = (event) => {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">${extraOffers[0].title}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${extraOffers[0].price}</span>
-          </li>
+          ${createOffersTemplate(extraOffers)}
         </ul>
 
         <button class="event__rollup-btn" type="button">
@@ -675,13 +683,11 @@ const POINT_COUNT = 15;
 
 
 
-// import {createTripEventsTemplate} from './components/trip-events.js';
 
 
 
 
 const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvents"])(POINT_COUNT);
-
 const tripEvent = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvent"])();
 
 const render = (container, template, place = `afterbegin`) => {
@@ -704,15 +710,7 @@ render(tripSortingElement, Object(_components_event_form_js__WEBPACK_IMPORTED_MO
 
 render(tripEventsElement, Object(_components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__["createTripEventsList"])(), `beforeend`);
 
-// const tripPointsElement = document.querySelector(`.trip-events__list`);
 
-// еще тут очень странная штука, что почему-то точки маршрута рендерятся в обратном порядке. поэтому я пока как костыль прикрутил .reverse()
-
-// tripEvents.reverse().forEach((event) => render(tripPointsElement, createTripEventsTemplate(event)));
-
-// for (let i = 0; i < POINT_COUNT; i++) {
-//   render(tripPointsElement, createTripEventsTemplate(), `afterbegin`);
-// }
 
 
 /***/ }),
@@ -775,23 +773,25 @@ const getRandomDate = (date = new Date()) => {
 };
 
 const getRandomDescription = () => {
-  const description = descriptionSentences.slice();
 
-  while (description.length > Math.ceil(Math.random() * MAX_SENTENCES)) {
-    description.splice(Math.floor(Math.random * descriptionSentences.length), 1);
-  }
+  let description = new Array(Math.ceil(Math.random() * MAX_SENTENCES));
+  description.fill(``);
+
+  description = description.map(() => {
+    return descriptionSentences[Math.round(Math.random() * descriptionSentences.length - 1)];
+  });
 
   return description.join(` `);
 };
 
 const generateEvent = () => {
-  const date = getRandomDate();
+  const startDate = getRandomDate();
 
   return {
     type: getRandomArrayElement(_const_js__WEBPACK_IMPORTED_MODULE_0__["EVENT_TYPES"]),
     destination: getRandomArrayElement(destinations),
-    startDate: date,
-    endDate: getRandomDate(date), // !! почему-то в итогде та же дата получается
+    startDate,
+    endDate: getRandomDate(startDate), // !! почему-то в итогде та же дата получается
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
@@ -869,8 +869,7 @@ const formatDate = (date) => {
 
   const day = date.getDate();
   const month = date.getMonth();
-  let year = date.getFullYear();
-  year = year.toString().slice(2, 4);
+  const year = date.getFullYear().toString().slice(2, 4);
   const hours = formatTime(date.getHours());
   const minutes = formatTime(date.getMinutes());
   return `${day}/${month}/${year} ${hours}:${minutes}`;
