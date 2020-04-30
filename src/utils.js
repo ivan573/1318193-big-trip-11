@@ -54,7 +54,7 @@ const getTime = (date) => {
 
 const getDuration = (start, end) => {
   const duration = (end - start);
-  const minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+  let minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
   if (minutes < MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
   } else {

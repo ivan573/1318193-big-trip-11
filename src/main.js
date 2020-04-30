@@ -7,10 +7,8 @@ import {createSortingTemplate} from './components/sorting.js';
 import {createEventFormTemplate} from './components/event-form.js';
 import {createTripEventsList} from './components/trip-events-list.js';
 
-import {generateEvents} from './mock/trip-events.js';
 import {generateEvent} from './mock/trip-events.js';
 
-const tripEvents = generateEvents(POINT_COUNT);
 const tripEvent = generateEvent();
 
 const render = (container, template, place = `afterbegin`) => {
@@ -32,5 +30,3 @@ const tripSortingElement = document.querySelector(`.trip-sort`);
 render(tripSortingElement, createEventFormTemplate(tripEvent), `afterend`);
 
 render(tripEventsElement, createTripEventsList(), `beforeend`);
-
-export {tripEvents};

@@ -482,23 +482,31 @@ const createTripDay = (day, month, year, index, events) => {
     </li>`);
 };
 
-const uniqueEvents = tripEvents.filter((it, index, array) => {
-  if (index === 0) {
-    return true;
-  } else {
-    return (it.toString() !== array[0].toString());
-  }
+const uniqueEvents = new Set();
+
+tripEvents.forEach((it) => {
+  uniqueEvents.add(it);
 });
 
-const uniqueDays = new Set();
-uniqueEvents.forEach((it, index) => {
-  uniqueDays.add({
-    day: it.startDate.getDate(),
-    month: it.startDate.getMonth(),
-    year: it.startDate.getFullYear(),
-    dateIndex: index
-  });
-});
+console.log(uniqueEvents);
+
+// const uniqueEvents = tripEvents.filter((it, index, array) => {
+//   if (index === 0) {
+//     return true;
+//   } else {
+//     return (it.toString() !== array[0].toString());
+//   }
+// });
+
+// const uniqueDays = new Set();
+// uniqueEvents.forEach((it, index) => {
+//   uniqueDays.add({
+//     day: it.startDate.getDate(),
+//     month: it.startDate.getMonth(),
+//     year: it.startDate.getFullYear(),
+//     dateIndex: index
+//   });
+// });
 
 const isSameDate = (originalDate, checkedDate) => {
 

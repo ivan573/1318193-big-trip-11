@@ -30,21 +30,18 @@ const createTripDay = (day, month, year, index, events) => {
     </li>`);
 };
 
-const uniqueEvents = tripEvents.filter((it, index, array) => {
-  if (index === 0) {
-    return true;
-  } else {
-    return (it.toString() !== array[0].toString());
-  }
-});
-
-const uniqueDays = new Set();
-uniqueEvents.forEach((it, index) => {
-  uniqueDays.add({
+const tripDays = tripEvents.map((it) => {
+  return {
     day: it.startDate.getDate(),
     month: it.startDate.getMonth(),
-    year: it.startDate.getFullYear(),
-    dateIndex: index
+    year: it.startDate.getFullYear()
+  };
+});
+
+const uniqueDays = tripDays.filter((it, index) => {
+  const element = JSON.stringify(it);
+  return index === tripDays.findIndex((obj) => {
+    return JSON.stringify(obj) === element;
   });
 });
 
@@ -58,7 +55,7 @@ const createTripDaysTemplate = () => {
 
   let template = ``;
 
-  uniqueDays.forEach((day) => {
+  uniqueDays.forEach((day, index) => {
 
     let correspondingEvents = [];
 
@@ -70,7 +67,7 @@ const createTripDaysTemplate = () => {
 
     });
 
-    template += createTripDay(day.day, day.month, day.year, day.dateIndex, correspondingEvents) + `\n`;
+    template += createTripDay(day.day, day.month, day.year, index, correspondingEvents) + `\n`;
   });
 
   return template;

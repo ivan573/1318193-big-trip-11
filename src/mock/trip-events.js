@@ -31,6 +31,7 @@ const getRandomArrayElement = (array) => {
 
 const getRandomDate = (date = new Date()) => {
   const targetDate = date;
+
   const targetDateMinutes = targetDate.getMinutes();
 
   const currentMinutes = targetDateMinutes % 5 !== 0 ?
@@ -62,7 +63,7 @@ const generateEvent = () => {
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
     startDate,
-    endDate: getRandomDate(startDate), // !! почему-то в итогде та же дата получается
+    endDate: getRandomDate(new Date(startDate.getTime())), // !! почему-то в итогде та же дата получается
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
