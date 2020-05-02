@@ -1,12 +1,13 @@
-const POINT_COUNT = 3;
-
 import {createRouteAndCostTemplate} from './components/route-and-cost.js';
 import {createMenuTemplate} from './components/menu.js';
 import {createFiltersTemplate} from './components/filters.js';
 import {createSortingTemplate} from './components/sorting.js';
 import {createEventFormTemplate} from './components/event-form.js';
 import {createTripEventsList} from './components/trip-events-list.js';
-import {createTripEventsTemplate} from './components/trip-events.js';
+
+import {generateEvent} from './mock/trip-events.js';
+
+const tripEvent = generateEvent();
 
 const render = (container, template, place = `afterbegin`) => {
   container.insertAdjacentHTML(place, template);
@@ -24,12 +25,6 @@ render(tripEventsElement.querySelector(`h2`), createSortingTemplate(), `afterend
 
 const tripSortingElement = document.querySelector(`.trip-sort`);
 
-render(tripSortingElement, createEventFormTemplate(), `afterend`);
+render(tripSortingElement, createEventFormTemplate(tripEvent), `afterend`);
 
 render(tripEventsElement, createTripEventsList(), `beforeend`);
-
-const tripPointsElement = document.querySelector(`.trip-events__list`);
-
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripPointsElement, createTripEventsTemplate(), `afterbegin`);
-}
