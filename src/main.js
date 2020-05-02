@@ -1,5 +1,3 @@
-const POINT_COUNT = 15;
-
 import {createRouteAndCostTemplate} from './components/route-and-cost.js';
 import {createMenuTemplate} from './components/menu.js';
 import {createFiltersTemplate} from './components/filters.js';

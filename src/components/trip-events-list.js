@@ -1,10 +1,12 @@
+const EVENTS_COUNT = 15;
+
 import {generateEvents} from '../mock/trip-events.js';
-
-const tripEvents = generateEvents(15);
-
 import {MONTHS} from '../const.js';
 import {formatTime} from '../utils.js';
+import {convertDateToString} from '../utils.js';
 import {createTripEventsTemplate} from './trip-events.js';
+
+const tripEvents = generateEvents(EVENTS_COUNT);
 
 const generateCorrespodingEventsTemplate = ((events) => {
   let template = ``;
@@ -30,45 +32,38 @@ const createTripDay = (day, month, year, index, events) => {
     </li>`);
 };
 
-const tripDays = tripEvents.map((it) => {
-  return {
-    day: it.startDate.getDate(),
-    month: it.startDate.getMonth(),
-    year: it.startDate.getFullYear()
-  };
-});
-
-const uniqueDays = tripDays.filter((it, index) => {
-  const element = JSON.stringify(it);
-  return index === tripDays.findIndex((obj) => {
-    return JSON.stringify(obj) === element;
-  });
-});
-
 const isSameDate = (originalDate, checkedDate) => {
-
-  return originalDate.day === checkedDate.startDate.getDate() && originalDate.month === checkedDate.startDate.getMonth() && originalDate.year === checkedDate.startDate.getFullYear() ?
-    true : false;
+  return convertDateToString(originalDate) === convertDateToString(checkedDate);
 };
 
-const createTripDaysTemplate = () => {
+const createTripDaysTemplate = (events) => {
+
+  const uniqueDays = {};
+  events.forEach((it) => {
+    uniqueDays[convertDateToString(it.startDate)] = it.startDate;
+  });
 
   let template = ``;
+  let counter = 0;
 
-  uniqueDays.forEach((day, index) => {
+  for (const day in uniqueDays) {
+    if (uniqueDays[day] instanceof Date) {
 
-    let correspondingEvents = [];
+      let correspondingEvents = [];
 
-    tripEvents.forEach((event) => {
+      events.forEach((event) => {
 
-      if (isSameDate(day, event)) {
-        correspondingEvents.push(event);
-      }
+        if (isSameDate(uniqueDays[day], event.startDate)) {
+          correspondingEvents.push(event);
+        }
 
-    });
+      });
 
-    template += createTripDay(day.day, day.month, day.year, index, correspondingEvents) + `\n`;
-  });
+      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(), counter, correspondingEvents) + `\n`;
+
+      counter++;
+    }
+  }
 
   return template;
 };
@@ -78,10 +73,9 @@ const createTripEventsList = () => {
   return (
     /* html */
     `<ul class="trip-days">
-      ${createTripDaysTemplate()}
+      ${createTripDaysTemplate(tripEvents)}
     </ul>`
   );
 };
 
 export {createTripEventsList};
-export {tripEvents};

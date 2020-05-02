@@ -1,5 +1,3 @@
-const NUMBER_OF_CHARACTERS_TO_REMOVE = 3; // я не придумал как сделать это элегантнее, чтобы получалось как в разметке
-
 const MILLISECONDS_IN_A_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;
 const MINUTES_IN_AN_HOUR = 60;
@@ -40,9 +38,12 @@ const formatDate = (date) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
+const convertDateToString = (date) => {
+  return `${date.getFullYear()}-${formatTime(date.getMonth() + 1)}-${formatTime(date.getDate())}`;
+};
+
 const getFullDate = (date) => {
-  const string = date.toISOString();
-  return string.slice(0, string.indexOf(`.`) - NUMBER_OF_CHARACTERS_TO_REMOVE); // без вычитания возвращает еще и секунды
+  return `${convertDateToString(date)}T${formatTime(date.getHours())}:${formatTime(date.getMinutes())}`;
 };
 
 const getTime = (date) => {
@@ -64,4 +65,4 @@ const getDuration = (start, end) => {
   }
 };
 
-export {formatTime, formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration};
+export {formatTime, formatType, getEventTitle, formatDate, convertDateToString, getFullDate, getTime, getDuration};

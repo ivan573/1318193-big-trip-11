@@ -46,14 +46,9 @@ const getRandomDate = (date = new Date()) => {
 
 const getRandomDescription = () => {
 
-  let description = new Array(Math.ceil(Math.random() * MAX_SENTENCES));
-  description.fill(``);
-
-  description = description.map(() => {
+  return new Array(Math.ceil(Math.random() * MAX_SENTENCES)).fill(``).map(() => {
     return descriptionSentences[Math.round(Math.random() * descriptionSentences.length - 1)];
-  });
-
-  return description.join(` `);
+  }).join(` `);
 };
 
 const generateEvent = () => {
@@ -63,11 +58,12 @@ const generateEvent = () => {
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
     startDate,
-    endDate: getRandomDate(new Date(startDate.getTime())), // !! почему-то в итогде та же дата получается
+    endDate: getRandomDate(new Date(startDate.getTime())),
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
         title: `Order Uber`,
+        shortTitle: `uber`,
         price: 20
       }
     ],
