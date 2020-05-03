@@ -1,4 +1,4 @@
-import {formatType, formatDate} from "../utils.js";
+import {formatType, formatDate, createElement} from "../utils.js";
 
 const creareOffersTemplate = (offers) => {
   let template = ``;
@@ -163,4 +163,28 @@ const createEventFormTemplate = (event) => {
   );
 };
 
-export {createEventFormTemplate};
+const EventForm = class {
+  constructor(event) {
+    this._element = null;
+
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventFormTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+};
+
+export {EventForm as default};

@@ -2,17 +2,28 @@ const EVENTS_COUNT = 15;
 
 import {generateEvents} from '../mock/trip-events.js';
 import {MONTHS} from '../const.js';
-import {formatTime} from '../utils.js';
-import {convertDateToString} from '../utils.js';
-import {createTripEventsTemplate} from './trip-events.js';
+import {formatTime, convertDateToString, createElement} from '../utils.js';
+
+import TripEventComponent from './trip-event.js';
+import EventFormComponent from './event-form.js';
 
 const tripEvents = generateEvents(EVENTS_COUNT);
 
 const generateCorrespodingEventsTemplate = ((events) => {
   let template = ``;
 
-  events.forEach((it) => {
-    template += createTripEventsTemplate(it) + `\n`;
+  events.forEach((it) => { // самым простым вариантом мне показалось добавить обработчик событий тут, но оно не работает
+    const tripEventComponent = new TripEventComponent(it);
+    const eventFormComponent = new EventFormComponent(it);
+
+    const expandButton = tripEventComponent.getElement().querySelector(`button`);
+    expandButton.addEventListener(`click`, () => {
+      // eslint-disable-next-line no-console
+      console.log(`hi!`);
+      tripEventComponent.getElement().replaceWith(eventFormComponent.getElement());
+    });
+
+    template += tripEventComponent.getTemplate() + `\n`;
   });
   return template;
 });
@@ -59,7 +70,8 @@ const createTripDaysTemplate = (events) => {
 
       });
 
-      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(), counter, correspondingEvents) + `\n`;
+      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(),
+          counter, correspondingEvents) + `\n`;
 
       counter++;
     }
@@ -78,4 +90,26 @@ const createTripEventsList = () => {
   );
 };
 
-export {createTripEventsList};
+const TripEventsList = class {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventsList();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+};
+
+export {TripEventsList as default};
