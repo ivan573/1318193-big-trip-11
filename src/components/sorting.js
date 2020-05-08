@@ -30,7 +30,7 @@ const createSortingTemplate = () => {
   );
 };
 
-const Sorting = class {
+class Sorting {
   constructor() {
     this._element = null;
   }

@@ -52,7 +52,7 @@ const createTripEventTemplate = (event) => {
   );
 };
 
-const TripEvent = class {
+class TripEvent {
   constructor(event) {
     this._element = null;
 

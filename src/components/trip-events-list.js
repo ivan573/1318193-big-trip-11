@@ -4,41 +4,20 @@ import {generateEvents} from '../mock/trip-events.js';
 import {MONTHS} from '../const.js';
 import {formatTime, convertDateToString, createElement} from '../utils.js';
 
-import TripEventComponent from './trip-event.js';
-import EventFormComponent from './event-form.js';
-
 const tripEvents = generateEvents(EVENTS_COUNT);
 
-const generateCorrespodingEventsTemplate = ((events) => {
-  let template = ``;
+const eventsPerDay = {};
 
-  events.forEach((it) => { // самым простым вариантом мне показалось добавить обработчик событий тут, но оно не работает
-    const tripEventComponent = new TripEventComponent(it);
-    const eventFormComponent = new EventFormComponent(it);
-
-    const expandButton = tripEventComponent.getElement().querySelector(`button`);
-    expandButton.addEventListener(`click`, () => {
-      // eslint-disable-next-line no-console
-      console.log(`hi!`);
-      tripEventComponent.getElement().replaceWith(eventFormComponent.getElement());
-    });
-
-    template += tripEventComponent.getTemplate() + `\n`;
-  });
-  return template;
-});
-
-const createTripDay = (day, month, year, index, events) => {
+const createTripDay = (day, month, year, index) => {
 
   return (
     /* html */
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${index + 1}</span>
+        <span class="day__counter">${index}</span>
         <time class="day__date" datetime="${year}-${formatTime(month)}-${formatTime(day)}">${MONTHS[month]} ${day}</time>
       </div>
       <ul class="trip-events__list">
-        ${generateCorrespodingEventsTemplate(events)}
       </ul>
     </li>`);
 };
@@ -55,12 +34,12 @@ const createTripDaysTemplate = (events) => {
   });
 
   let template = ``;
-  let counter = 0;
+  let counter = 1;
 
   for (const day in uniqueDays) {
     if (uniqueDays[day] instanceof Date) {
 
-      let correspondingEvents = [];
+      const correspondingEvents = [];
 
       events.forEach((event) => {
 
@@ -71,7 +50,9 @@ const createTripDaysTemplate = (events) => {
       });
 
       template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(),
-          counter, correspondingEvents) + `\n`;
+          counter) + `\n`;
+
+      eventsPerDay[(counter).toString()] = correspondingEvents;
 
       counter++;
     }
@@ -90,7 +71,7 @@ const createTripEventsList = () => {
   );
 };
 
-const TripEventsList = class {
+class TripEventsList {
   constructor() {
     this._element = null;
   }
@@ -110,6 +91,6 @@ const TripEventsList = class {
   removeElement() {
     this._element = null;
   }
-};
+}
 
-export {TripEventsList as default};
+export {TripEventsList as default, eventsPerDay};

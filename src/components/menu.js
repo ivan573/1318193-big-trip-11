@@ -10,7 +10,7 @@ const createMenuTemplate = () => {
   );
 };
 
-const MenuTemplate = class {
+class MenuTemplate {
   constructor() {
     this._element = null;
   }

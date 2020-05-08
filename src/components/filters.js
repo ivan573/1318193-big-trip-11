@@ -33,7 +33,7 @@ const createFiltersTemplate = () => {
   );
 };
 
-const Filters = class {
+class Filters {
   constructor() {
     this._element = null;
   }

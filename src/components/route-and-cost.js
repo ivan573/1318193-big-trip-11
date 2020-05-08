@@ -17,7 +17,7 @@ const createRouteAndCostTemplate = () => {
   );
 };
 
-const RouteAndCost = class {
+class RouteAndCost {
   constructor() {
     this._element = null;
   }
