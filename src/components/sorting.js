@@ -50,6 +50,6 @@ class Sorting {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {Sorting as default};

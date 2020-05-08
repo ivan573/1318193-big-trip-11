@@ -30,6 +30,6 @@ class MenuTemplate {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {MenuTemplate as default};

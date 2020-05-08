@@ -37,6 +37,6 @@ class RouteAndCost {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {RouteAndCost as default};

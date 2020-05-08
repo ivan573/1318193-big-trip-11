@@ -53,6 +53,6 @@ class Filters {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {Filters as default};

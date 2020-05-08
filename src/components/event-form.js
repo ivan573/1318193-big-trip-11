@@ -187,6 +187,6 @@ class EventForm {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {EventForm as default};

@@ -90,195 +90,203 @@
 /*!**************************************!*\
   !*** ./src/components/event-form.js ***!
   \**************************************/
-/*! exports provided: createEventFormTemplate */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventFormTemplate", function() { return createEventFormTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EventForm; });
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
 
 
+const creareOffersTemplate = (offers) => {
+  let template = ``;
+
+  offers.forEach((it) => {
+    template +=
+    /* html */
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.shortTitle}-1" type="checkbox" name="event-offer-${it.shortTitle}" checked>
+      <label class="event__offer-label" for="event-offer-${it.shortTitle}-1">
+        <span class="event__offer-title">${it.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+      </label>
+    </div>` + `\n`;
+  });
+
+  return template;
+};
+
+const createPhotosTemplate = (photos) => {
+  let template = ``;
+
+  photos.forEach((it) => {
+    template += /* html */ `<img class="event__photo" src="${it}" alt="Event photo"></img>` + `\n`;
+  });
+
+  return template;
+};
+
 const createEventFormTemplate = (event) => {
-  const {type, destination, startDate, endDate, cost, info} = event;
+  const {type, destination, startDate, endDate, cost, extraOffers, info} = event;
   return (
     /* html */
-    `<form class="trip-events__item  event  event--edit" action="#" method="post">
-        <header class="event__header">
-          <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-toggle-1">
-              <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
-            </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+    `<li class="trip-events__item">
+        <form class="trip-events__item  event  event--edit" action="#" method="post">
+          <header class="event__header">
+            <div class="event__type-wrapper">
+              <label class="event__type  event__type-btn" for="event-type-toggle-1">
+                <span class="visually-hidden">Choose event type</span>
+                <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+              </label>
+              <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-            <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Transfer</legend>
+              <div class="event__type-list">
+                <fieldset class="event__type-group">
+                  <legend class="visually-hidden">Transfer</legend>
 
-                <div class="event__type-item">
-                  <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                  <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
+                    <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                  <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
+                    <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                  <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
+                    <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                  <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
+                    <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                  <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
+                    <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                  <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
+                    <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                  <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                </div>
-              </fieldset>
+                  <div class="event__type-item">
+                    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                    <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
+                  </div>
+                </fieldset>
 
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Activity</legend>
+                <fieldset class="event__type-group">
+                  <legend class="visually-hidden">Activity</legend>
 
-                <div class="event__type-item">
-                  <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                  <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
+                    <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                  <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                </div>
+                  <div class="event__type-item">
+                    <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
+                    <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
+                  </div>
 
-                <div class="event__type-item">
-                  <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                  <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-
-          <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for="event-destination-1">
-              ${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatType"])(type)}
-            </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
-            <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
-              <option value="Saint Petersburg"></option>
-            </datalist>
-          </div>
-
-          <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-1">
-              From
-            </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(startDate)}">
-            &mdash;
-            <label class="visually-hidden" for="event-end-time-1">
-              To
-            </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(endDate)}">
-          </div>
-
-          <div class="event__field-group  event__field-group--price">
-            <label class="event__label" for="event-price-1">
-              <span class="visually-hidden">Price</span>
-              &euro;
-            </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
-          </div>
-
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
-        </header>
-        <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">Add luggage</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">30</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">Switch to comfort class</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">100</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">Add meal</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">15</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                <label class="event__offer-label" for="event-offer-seats-1">
-                  <span class="event__offer-title">Choose seats</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">5</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                <label class="event__offer-label" for="event-offer-train-1">
-                  <span class="event__offer-title">Travel by train</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">40</span>
-                </label>
+                  <div class="event__type-item">
+                    <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
+                    <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
+                  </div>
+                </fieldset>
               </div>
             </div>
+
+            <div class="event__field-group  event__field-group--destination">
+              <label class="event__label  event__type-output" for="event-destination-1">
+                ${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatType"])(type)}
+              </label>
+              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+              <datalist id="destination-list-1">
+                <option value="Amsterdam"></option>
+                <option value="Geneva"></option>
+                <option value="Chamonix"></option>
+                <option value="Saint Petersburg"></option>
+              </datalist>
+            </div>
+
+            <div class="event__field-group  event__field-group--time">
+              <label class="visually-hidden" for="event-start-time-1">
+                From
+              </label>
+              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(startDate)}">
+              &mdash;
+              <label class="visually-hidden" for="event-end-time-1">
+                To
+              </label>
+              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["formatDate"])(endDate)}">
+            </div>
+
+            <div class="event__field-group  event__field-group--price">
+              <label class="event__label" for="event-price-1">
+                <span class="visually-hidden">Price</span>
+                &euro;
+              </label>
+              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+            </div>
+
+            <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+            <button class="event__reset-btn" type="reset">Cancel</button>
+          </header>
+          <section class="event__details">
+            <section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+              <div class="event__available-offers">
+                ${creareOffersTemplate(extraOffers)}
+              </div>
+            </section>
+
+            <section class="event__section  event__section--destination">
+              <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+              <p class="event__destination-description">${info.description}</p>
+
+              <div class="event__photos-container">
+                <div class="event__photos-tape">
+                  ${createPhotosTemplate(info.photos)}
+                </div>
+              </div>
+            </section>
           </section>
-
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${info.description}</p>
-
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                <img class="event__photo" src="${info.photos[0]}" alt="Event photo">
-                <!-- <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo"> -->
-              </div>
-            </div>
-          </section>
-        </section>
-    </form>`
+      </form>
+    </li>`
   );
 };
+
+class EventForm {
+  constructor(event) {
+    this._element = null;
+
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventFormTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 
 
@@ -289,12 +297,15 @@ const createEventFormTemplate = (event) => {
 /*!***********************************!*\
   !*** ./src/components/filters.js ***!
   \***********************************/
-/*! exports provided: createFiltersTemplate */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createFiltersTemplate", function() { return createFiltersTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Filters; });
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+
+
 const createFiltersTemplate = () => {
   return (
     /* html */
@@ -328,6 +339,28 @@ const createFiltersTemplate = () => {
   );
 };
 
+class Filters {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFiltersTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 
 
 
@@ -337,12 +370,15 @@ const createFiltersTemplate = () => {
 /*!********************************!*\
   !*** ./src/components/menu.js ***!
   \********************************/
-/*! exports provided: createMenuTemplate */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createMenuTemplate", function() { return createMenuTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MenuTemplate; });
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+
+
 const createMenuTemplate = () => {
   return (
     /* html */
@@ -353,6 +389,28 @@ const createMenuTemplate = () => {
   );
 };
 
+class MenuTemplate {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 
 
 
@@ -362,12 +420,15 @@ const createMenuTemplate = () => {
 /*!******************************************!*\
   !*** ./src/components/route-and-cost.js ***!
   \******************************************/
-/*! exports provided: createRouteAndCostTemplate */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRouteAndCostTemplate", function() { return createRouteAndCostTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return RouteAndCost; });
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+
+
 const createRouteAndCostTemplate = () => {
   return (
     /* html */
@@ -385,6 +446,28 @@ const createRouteAndCostTemplate = () => {
   );
 };
 
+class RouteAndCost {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createRouteAndCostTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 
 
 
@@ -394,12 +477,15 @@ const createRouteAndCostTemplate = () => {
 /*!***********************************!*\
   !*** ./src/components/sorting.js ***!
   \***********************************/
-/*! exports provided: createSortingTemplate */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSortingTemplate", function() { return createSortingTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Sorting; });
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+
+
 const createSortingTemplate = () => {
   return (
     /* html */
@@ -430,138 +516,43 @@ const createSortingTemplate = () => {
   );
 };
 
+class Sorting {
+  constructor() {
+    this._element = null;
+  }
 
+  getTemplate() {
+    return createSortingTemplate();
+  }
 
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
 
-/***/ }),
+    return this._element;
+  }
 
-/***/ "./src/components/trip-events-list.js":
-/*!********************************************!*\
-  !*** ./src/components/trip-events-list.js ***!
-  \********************************************/
-/*! exports provided: createTripEventsList, tripEvents */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsList", function() { return createTripEventsList; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
-/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mock/trip-events.js */ "./src/mock/trip-events.js");
-/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
-/* harmony import */ var _trip_events_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./trip-events.js */ "./src/components/trip-events.js");
-
-
-const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__["generateEvents"])(15);
-
-
-
-
-
-const generateCorrespodingEventsTemplate = ((events) => {
-  let template = ``;
-
-  events.forEach((it) => {
-    template += Object(_trip_events_js__WEBPACK_IMPORTED_MODULE_3__["createTripEventsTemplate"])(it) + `\n`;
-  });
-  return template;
-});
-
-const createTripDay = (day, month, year, index, events) => {
-
-  return (
-    /* html */
-    `<li class="trip-days__item  day">
-      <div class="day__info">
-        <span class="day__counter">${index + 1}</span>
-        <time class="day__date" datetime="${year}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(month)}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(day)}">${_const_js__WEBPACK_IMPORTED_MODULE_1__["MONTHS"][month]} ${day}</time>
-      </div>
-      <ul class="trip-events__list">
-        ${generateCorrespodingEventsTemplate(events)}
-      </ul>
-    </li>`);
-};
-
-const uniqueEvents = new Set();
-
-tripEvents.forEach((it) => {
-  uniqueEvents.add(it);
-});
-
-console.log(uniqueEvents);
-
-// const uniqueEvents = tripEvents.filter((it, index, array) => {
-//   if (index === 0) {
-//     return true;
-//   } else {
-//     return (it.toString() !== array[0].toString());
-//   }
-// });
-
-// const uniqueDays = new Set();
-// uniqueEvents.forEach((it, index) => {
-//   uniqueDays.add({
-//     day: it.startDate.getDate(),
-//     month: it.startDate.getMonth(),
-//     year: it.startDate.getFullYear(),
-//     dateIndex: index
-//   });
-// });
-
-const isSameDate = (originalDate, checkedDate) => {
-
-  return originalDate.day === checkedDate.startDate.getDate() && originalDate.month === checkedDate.startDate.getMonth() && originalDate.year === checkedDate.startDate.getFullYear() ?
-    true : false;
-};
-
-const createTripDaysTemplate = () => {
-
-  let template = ``;
-
-  uniqueDays.forEach((day) => {
-
-    let correspondingEvents = [];
-
-    tripEvents.forEach((event) => {
-
-      if (isSameDate(day, event)) {
-        correspondingEvents.push(event);
-      }
-
-    });
-
-    template += createTripDay(day.day, day.month, day.year, day.dateIndex, correspondingEvents) + `\n`;
-  });
-
-  return template;
-};
-
-
-const createTripEventsList = () => {
-  return (
-    /* html */
-    `<ul class="trip-days">
-      ${createTripDaysTemplate()}
-    </ul>`
-  );
-};
-
+  removeElement() {
+    this._element = null;
+  }
+}
 
 
 
 
 /***/ }),
 
-/***/ "./src/components/trip-events.js":
-/*!***************************************!*\
-  !*** ./src/components/trip-events.js ***!
-  \***************************************/
-/*! exports provided: createTripEventsTemplate */
+/***/ "./src/components/trip-event.js":
+/*!**************************************!*\
+  !*** ./src/components/trip-event.js ***!
+  \**************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createTripEventsTemplate", function() { return createTripEventsTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TripEvent; });
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
 
 
@@ -579,7 +570,7 @@ const createOffersTemplate = (offers) => {
   return template;
 };
 
-const createTripEventsTemplate = (event) => {
+const createTripEventTemplate = (event) => {
   const {type, startDate, endDate, cost, extraOffers} = event;
 
   return (
@@ -587,7 +578,7 @@ const createTripEventsTemplate = (event) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getEventTitle"])(event)}</h3>
 
@@ -616,6 +607,144 @@ const createTripEventsTemplate = (event) => {
     </li>`
   );
 };
+
+class TripEvent {
+  constructor(event) {
+    this._element = null;
+
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/components/trip-events-list.js":
+/*!********************************************!*\
+  !*** ./src/components/trip-events-list.js ***!
+  \********************************************/
+/*! exports provided: default, eventsPerDay */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TripEventsList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "eventsPerDay", function() { return eventsPerDay; });
+/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mock/trip-events.js */ "./src/mock/trip-events.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/utils.js");
+const EVENTS_COUNT = 15;
+
+
+
+
+
+const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_0__["generateEvents"])(EVENTS_COUNT);
+
+const eventsPerDay = {};
+
+const createTripDay = (day, month, year, index) => {
+
+  return (
+    /* html */
+    `<li class="trip-days__item  day">
+      <div class="day__info">
+        <span class="day__counter">${index}</span>
+        <time class="day__date" datetime="${year}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(month)}-${Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["formatTime"])(day)}">${_const_js__WEBPACK_IMPORTED_MODULE_1__["MONTHS"][month]} ${day}</time>
+      </div>
+      <ul class="trip-events__list">
+      </ul>
+    </li>`);
+};
+
+const isSameDate = (originalDate, checkedDate) => {
+  return Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["convertDateToString"])(originalDate) === Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["convertDateToString"])(checkedDate);
+};
+
+const createTripDaysTemplate = (events) => {
+
+  const uniqueDays = {};
+  events.forEach((it) => {
+    uniqueDays[Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["convertDateToString"])(it.startDate)] = it.startDate;
+  });
+
+  let template = ``;
+  let counter = 1;
+
+  for (const day in uniqueDays) {
+    if (uniqueDays[day] instanceof Date) {
+
+      const correspondingEvents = [];
+
+      events.forEach((event) => {
+
+        if (isSameDate(uniqueDays[day], event.startDate)) {
+          correspondingEvents.push(event);
+        }
+
+      });
+
+      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(),
+          counter) + `\n`;
+
+      eventsPerDay[(counter).toString()] = correspondingEvents;
+
+      counter++;
+    }
+  }
+
+  return template;
+};
+
+
+const createTripEventsList = () => {
+  return (
+    /* html */
+    `<ul class="trip-days">
+      ${createTripDaysTemplate(tripEvents)}
+    </ul>`
+  );
+};
+
+class TripEventsList {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventsList();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 
 
@@ -670,20 +799,19 @@ const MONTHS = {
 /*!*********************!*\
   !*** ./src/main.js ***!
   \*********************/
-/*! exports provided: tripEvents */
+/*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tripEvents", function() { return tripEvents; });
 /* harmony import */ var _components_route_and_cost_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/route-and-cost.js */ "./src/components/route-and-cost.js");
 /* harmony import */ var _components_menu_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/menu.js */ "./src/components/menu.js");
 /* harmony import */ var _components_filters_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/filters.js */ "./src/components/filters.js");
 /* harmony import */ var _components_sorting_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/sorting.js */ "./src/components/sorting.js");
 /* harmony import */ var _components_event_form_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/event-form.js */ "./src/components/event-form.js");
 /* harmony import */ var _components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/trip-events-list.js */ "./src/components/trip-events-list.js");
-/* harmony import */ var _mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./mock/trip-events.js */ "./src/mock/trip-events.js");
-const POINT_COUNT = 15;
+/* harmony import */ var _components_trip_event_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/trip-event.js */ "./src/components/trip-event.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./utils.js */ "./src/utils.js");
 
 
 
@@ -695,11 +823,27 @@ const POINT_COUNT = 15;
 
 
 
-const tripEvents = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvents"])(POINT_COUNT);
-const tripEvent = Object(_mock_trip_events_js__WEBPACK_IMPORTED_MODULE_6__["generateEvent"])();
 
-const render = (container, template, place = `afterbegin`) => {
-  container.insertAdjacentHTML(place, template);
+const renderEvent = (dayElement, event) => {
+
+  const onEditButtonClick = () => {
+    dayElement.replaceChild(eventFormComponent.getElement(), tripEventComponent.getElement());
+  };
+
+  const onEditFormSubmit = (evt) => {
+    evt.preventDefault();
+    dayElement.replaceChild(tripEventComponent.getElement(), eventFormComponent.getElement());
+  };
+
+  const tripEventComponent = new _components_trip_event_js__WEBPACK_IMPORTED_MODULE_6__["default"](event);
+  const editButton = tripEventComponent.getElement().querySelector(`button`);
+  editButton.addEventListener(`click`, onEditButtonClick);
+
+  const eventFormComponent = new _components_event_form_js__WEBPACK_IMPORTED_MODULE_4__["default"](event);
+  const editForm = eventFormComponent.getElement().querySelector(`form`);
+  editForm.addEventListener(`submit`, onEditFormSubmit);
+
+  Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(dayElement, tripEventComponent.getElement(), `beforeend`);
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -707,18 +851,22 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
 
-render(tripMainElement, Object(_components_route_and_cost_js__WEBPACK_IMPORTED_MODULE_0__["createRouteAndCostTemplate"])());
-render(tripControlsElement.querySelector(`h2`), Object(_components_menu_js__WEBPACK_IMPORTED_MODULE_1__["createMenuTemplate"])());
-render(tripControlsElement, Object(_components_filters_js__WEBPACK_IMPORTED_MODULE_2__["createFiltersTemplate"])(), `beforeend`);
-render(tripEventsElement.querySelector(`h2`), Object(_components_sorting_js__WEBPACK_IMPORTED_MODULE_3__["createSortingTemplate"])(), `afterend`);
+Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(tripMainElement, new _components_route_and_cost_js__WEBPACK_IMPORTED_MODULE_0__["default"]().getElement());
+Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(tripControlsElement.querySelector(`h2`), new _components_menu_js__WEBPACK_IMPORTED_MODULE_1__["default"]().getElement());
+Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(tripControlsElement, new _components_filters_js__WEBPACK_IMPORTED_MODULE_2__["default"]().getElement(), `beforeend`);
+Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(tripEventsElement.querySelector(`h2`), new _components_sorting_js__WEBPACK_IMPORTED_MODULE_3__["default"]().getElement(), `afterend`);
+Object(_utils_js__WEBPACK_IMPORTED_MODULE_7__["render"])(tripEventsElement, new _components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__["default"]().getElement(), `beforeend`);
 
-const tripSortingElement = document.querySelector(`.trip-sort`);
+const tripDayElements = document.querySelectorAll(`.trip-days__item`);
 
-render(tripSortingElement, Object(_components_event_form_js__WEBPACK_IMPORTED_MODULE_4__["createEventFormTemplate"])(tripEvent), `afterend`);
+tripDayElements.forEach((element) => {
+  const dayNumber = element.querySelector(`.day__counter`).innerHTML;
+  const eventsList = element.querySelector(`.trip-events__list`);
 
-render(tripEventsElement, Object(_components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__["createTripEventsList"])(), `beforeend`);
-
-
+  _components_trip_events_list_js__WEBPACK_IMPORTED_MODULE_5__["eventsPerDay"][dayNumber].forEach((event) => {
+    renderEvent(eventsList, event);
+  });
+});
 
 
 /***/ }),
@@ -768,6 +916,7 @@ const getRandomArrayElement = (array) => {
 
 const getRandomDate = (date = new Date()) => {
   const targetDate = date;
+
   const targetDateMinutes = targetDate.getMinutes();
 
   const currentMinutes = targetDateMinutes % 5 !== 0 ?
@@ -782,14 +931,9 @@ const getRandomDate = (date = new Date()) => {
 
 const getRandomDescription = () => {
 
-  let description = new Array(Math.ceil(Math.random() * MAX_SENTENCES));
-  description.fill(``);
-
-  description = description.map(() => {
+  return new Array(Math.ceil(Math.random() * MAX_SENTENCES)).fill(``).map(() => {
     return descriptionSentences[Math.round(Math.random() * descriptionSentences.length - 1)];
-  });
-
-  return description.join(` `);
+  }).join(` `);
 };
 
 const generateEvent = () => {
@@ -799,11 +943,12 @@ const generateEvent = () => {
     type: getRandomArrayElement(_const_js__WEBPACK_IMPORTED_MODULE_0__["EVENT_TYPES"]),
     destination: getRandomArrayElement(destinations),
     startDate,
-    endDate: getRandomDate(startDate), // !! почему-то в итогде та же дата получается
+    endDate: getRandomDate(new Date(startDate.getTime())),
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
     extraOffers: [
       {
         title: `Order Uber`,
+        shortTitle: `uber`,
         price: 20
       }
     ],
@@ -829,7 +974,7 @@ const generateEvents = (count) => {
 /*!**********************!*\
   !*** ./src/utils.js ***!
   \**********************/
-/*! exports provided: formatTime, formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration */
+/*! exports provided: formatTime, formatType, getEventTitle, formatDate, convertDateToString, getFullDate, getTime, getDuration, createElement, render */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -838,14 +983,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatType", function() { return formatType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEventTitle", function() { return getEventTitle; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDate", function() { return formatDate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "convertDateToString", function() { return convertDateToString; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFullDate", function() { return getFullDate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTime", function() { return getTime; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDuration", function() { return getDuration; });
-const NUMBER_OF_CHARACTERS_TO_REMOVE = 3; // я не придумал как сделать это элегантнее, чтобы получалось как в разметке
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createElement", function() { return createElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 const MILLISECONDS_IN_A_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;
 const MINUTES_IN_AN_HOUR = 60;
+
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`
+};
 
 const formatTime = (time) => {
   return time.toString().length > 1 ? time : `0` + time;
@@ -883,9 +1035,12 @@ const formatDate = (date) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
+const convertDateToString = (date) => {
+  return `${date.getFullYear()}-${formatTime(date.getMonth() + 1)}-${formatTime(date.getDate())}`;
+};
+
 const getFullDate = (date) => {
-  const string = date.toISOString();
-  return string.slice(0, string.indexOf(`.`) - NUMBER_OF_CHARACTERS_TO_REMOVE); // без вычитания возвращает еще и секунды
+  return `${convertDateToString(date)}T${formatTime(date.getHours())}:${formatTime(date.getMinutes())}`;
 };
 
 const getTime = (date) => {
@@ -897,13 +1052,34 @@ const getTime = (date) => {
 
 const getDuration = (start, end) => {
   const duration = (end - start);
-  const minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+  let minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
   if (minutes < MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
   } else {
     const hours = Math.floor(minutes / MINUTES_IN_AN_HOUR);
     minutes = minutes % MINUTES_IN_AN_HOUR;
     return hours + `H ` + minutes + `M`;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+const render = (container, element, place = RenderPosition.AFTERBEGIN) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
   }
 };
 

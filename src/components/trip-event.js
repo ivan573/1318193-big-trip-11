@@ -74,6 +74,6 @@ class TripEvent {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export {TripEvent as default};
