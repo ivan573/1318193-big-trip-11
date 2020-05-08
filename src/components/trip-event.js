@@ -1,4 +1,4 @@
-import {getEventTitle, getFullDate, getTime, getDuration} from '../utils.js';
+import {getEventTitle, getFullDate, getTime, getDuration, createElement} from '../utils.js';
 
 const createOffersTemplate = (offers) => {
   let template = ``;
@@ -14,7 +14,7 @@ const createOffersTemplate = (offers) => {
   return template;
 };
 
-const createTripEventsTemplate = (event) => {
+const createTripEventTemplate = (event) => {
   const {type, startDate, endDate, cost, extraOffers} = event;
 
   return (
@@ -52,4 +52,28 @@ const createTripEventsTemplate = (event) => {
   );
 };
 
-export {createTripEventsTemplate};
+class TripEvent {
+  constructor(event) {
+    this._element = null;
+
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {TripEvent as default};

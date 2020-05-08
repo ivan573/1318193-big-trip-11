@@ -2,6 +2,12 @@ const MILLISECONDS_IN_A_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;
 const MINUTES_IN_AN_HOUR = 60;
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`
+};
+
 const formatTime = (time) => {
   return time.toString().length > 1 ? time : `0` + time;
 };
@@ -65,4 +71,26 @@ const getDuration = (start, end) => {
   }
 };
 
-export {formatTime, formatType, getEventTitle, formatDate, convertDateToString, getFullDate, getTime, getDuration};
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+const render = (container, element, place = RenderPosition.AFTERBEGIN) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+  }
+};
+
+export {formatTime, formatType, getEventTitle, formatDate, convertDateToString, getFullDate, getTime, getDuration,
+  createElement, render};

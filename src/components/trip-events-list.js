@@ -2,32 +2,22 @@ const EVENTS_COUNT = 15;
 
 import {generateEvents} from '../mock/trip-events.js';
 import {MONTHS} from '../const.js';
-import {formatTime} from '../utils.js';
-import {convertDateToString} from '../utils.js';
-import {createTripEventsTemplate} from './trip-events.js';
+import {formatTime, convertDateToString, createElement} from '../utils.js';
 
 const tripEvents = generateEvents(EVENTS_COUNT);
 
-const generateCorrespodingEventsTemplate = ((events) => {
-  let template = ``;
+const eventsPerDay = {};
 
-  events.forEach((it) => {
-    template += createTripEventsTemplate(it) + `\n`;
-  });
-  return template;
-});
-
-const createTripDay = (day, month, year, index, events) => {
+const createTripDay = (day, month, year, index) => {
 
   return (
     /* html */
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${index + 1}</span>
+        <span class="day__counter">${index}</span>
         <time class="day__date" datetime="${year}-${formatTime(month)}-${formatTime(day)}">${MONTHS[month]} ${day}</time>
       </div>
       <ul class="trip-events__list">
-        ${generateCorrespodingEventsTemplate(events)}
       </ul>
     </li>`);
 };
@@ -44,12 +34,12 @@ const createTripDaysTemplate = (events) => {
   });
 
   let template = ``;
-  let counter = 0;
+  let counter = 1;
 
   for (const day in uniqueDays) {
     if (uniqueDays[day] instanceof Date) {
 
-      let correspondingEvents = [];
+      const correspondingEvents = [];
 
       events.forEach((event) => {
 
@@ -59,7 +49,10 @@ const createTripDaysTemplate = (events) => {
 
       });
 
-      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(), counter, correspondingEvents) + `\n`;
+      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(),
+          counter) + `\n`;
+
+      eventsPerDay[(counter).toString()] = correspondingEvents;
 
       counter++;
     }
@@ -78,4 +71,26 @@ const createTripEventsList = () => {
   );
 };
 
-export {createTripEventsList};
+class TripEventsList {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventsList();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {TripEventsList as default, eventsPerDay};
