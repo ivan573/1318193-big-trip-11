@@ -2,11 +2,12 @@ const EVENTS_COUNT = 15;
 
 import {generateEvents} from '../mock/trip-events.js';
 import {MONTHS} from '../const.js';
-import {formatTime, convertDateToString, createElement} from '../utils.js';
+import {formatTime, getEventsPerDay} from '../utils/common.js';
+import AbstractComponent from "./abstract-component.js";
 
 const tripEvents = generateEvents(EVENTS_COUNT);
 
-const eventsPerDay = {};
+const eventsPerDay = getEventsPerDay(tripEvents);
 
 const createTripDay = (day, month, year, index) => {
 
@@ -22,39 +23,14 @@ const createTripDay = (day, month, year, index) => {
     </li>`);
 };
 
-const isSameDate = (originalDate, checkedDate) => {
-  return convertDateToString(originalDate) === convertDateToString(checkedDate);
-};
-
-const createTripDaysTemplate = (events) => {
-
-  const uniqueDays = {};
-  events.forEach((it) => {
-    uniqueDays[convertDateToString(it.startDate)] = it.startDate;
-  });
+const createTripDaysTemplate = () => {
 
   let template = ``;
-  let counter = 1;
 
-  for (const day in uniqueDays) {
-    if (uniqueDays[day] instanceof Date) {
-
-      const correspondingEvents = [];
-
-      events.forEach((event) => {
-
-        if (isSameDate(uniqueDays[day], event.startDate)) {
-          correspondingEvents.push(event);
-        }
-
-      });
-
-      template += createTripDay(uniqueDays[day].getDate(), uniqueDays[day].getMonth(), uniqueDays[day].getFullYear(),
-          counter) + `\n`;
-
-      eventsPerDay[(counter).toString()] = correspondingEvents;
-
-      counter++;
+  for (const day in eventsPerDay) {
+    if (eventsPerDay[day].length !== 0) {
+      const date = eventsPerDay[day][0].startDate;
+      template += createTripDay(date.getDate(), date.getMonth(), date.getFullYear(), day) + `\n`;
     }
   }
 
@@ -66,30 +42,14 @@ const createTripEventsList = () => {
   return (
     /* html */
     `<ul class="trip-days">
-      ${createTripDaysTemplate(tripEvents)}
+      ${createTripDaysTemplate()}
     </ul>`
   );
 };
 
-class TripEventsList {
-  constructor() {
-    this._element = null;
-  }
-
+class TripEventsList extends AbstractComponent {
   getTemplate() {
     return createTripEventsList();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from "./abstract-component.js";
 
 const createRouteAndCostTemplate = () => {
   return (
@@ -17,25 +17,9 @@ const createRouteAndCostTemplate = () => {
   );
 };
 
-class RouteAndCost {
-  constructor() {
-    this._element = null;
-  }
-
+class RouteAndCost extends AbstractComponent {
   getTemplate() {
     return createRouteAndCostTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

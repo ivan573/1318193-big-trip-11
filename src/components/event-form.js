@@ -1,4 +1,5 @@
-import {formatType, formatDate, createElement} from "../utils.js";
+import {formatType, formatDate} from "../utils/common.js";
+import AbstractComponent from "./abstract-component.js";
 
 const creareOffersTemplate = (offers) => {
   let template = ``;
@@ -165,9 +166,9 @@ const createEventFormTemplate = (event) => {
   );
 };
 
-class EventForm {
+class EventForm extends AbstractComponent {
   constructor(event) {
-    this._element = null;
+    super();
 
     this._event = event;
   }
@@ -176,16 +177,9 @@ class EventForm {
     return createEventFormTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
   }
 }
 
