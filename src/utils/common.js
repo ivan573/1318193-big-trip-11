@@ -2,12 +2,6 @@ const MILLISECONDS_IN_A_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;
 const MINUTES_IN_AN_HOUR = 60;
 
-const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-  AFTEREND: `afterend`
-};
-
 const formatTime = (time) => {
   return time.toString().length > 1 ? time : `0` + time;
 };
@@ -71,26 +65,36 @@ const getDuration = (start, end) => {
   }
 };
 
-const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
+const getEventsPerDay = (events) => {
+  const isSameDate = (originalDate, checkedDate) => {
+    return convertDateToString(originalDate) === convertDateToString(checkedDate);
+  };
 
-  return newElement.firstChild;
-};
+  const eventsPerDay = {};
+  const uniqueDays = {};
 
-const render = (container, element, place = RenderPosition.AFTERBEGIN) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    case RenderPosition.AFTEREND:
-      container.after(element);
-      break;
+  events.forEach((it) => {
+    uniqueDays[convertDateToString(it.startDate)] = it.startDate;
+  });
+
+  let counter = 1;
+
+  for (const day in uniqueDays) {
+    if (uniqueDays[day] instanceof Date) {
+      const correspondingEvents = [];
+
+      events.forEach((event) => {
+        if (isSameDate(uniqueDays[day], event.startDate)) {
+          correspondingEvents.push(event);
+        }
+      });
+
+      eventsPerDay[(counter).toString()] = correspondingEvents;
+      counter++;
+    }
   }
+
+  return eventsPerDay;
 };
 
-export {formatTime, formatType, getEventTitle, formatDate, convertDateToString, getFullDate, getTime, getDuration,
-  createElement, render};
+export {formatTime, formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration, getEventsPerDay};

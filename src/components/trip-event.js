@@ -1,4 +1,5 @@
-import {getEventTitle, getFullDate, getTime, getDuration, createElement} from '../utils.js';
+import {getEventTitle, getFullDate, getTime, getDuration} from '../utils/common.js';
+import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
   let template = ``;
@@ -52,9 +53,9 @@ const createTripEventTemplate = (event) => {
   );
 };
 
-class TripEvent {
+class TripEvent extends AbstractComponent {
   constructor(event) {
-    this._element = null;
+    super();
 
     this._event = event;
   }
@@ -63,16 +64,9 @@ class TripEvent {
     return createTripEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`button`)
+      .addEventListener(`click`, handler);
   }
 }
 
