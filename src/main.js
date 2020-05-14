@@ -4,8 +4,6 @@ import FiltersComponent from './components/filters.js';
 
 import TripController from './controllers/trip-events-list.js';
 
-import {eventsPerDay} from './components/trip-events-list.js';
-
 import {render} from './utils/render.js';
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -18,4 +16,4 @@ render(tripControlsElement, new FiltersComponent(), `beforeend`);
 render(tripMainElement, new RouteAndCostComponent());
 
 const tripController = new TripController(tripEventsElement);
-tripController.render(eventsPerDay);
+tripController.render();
