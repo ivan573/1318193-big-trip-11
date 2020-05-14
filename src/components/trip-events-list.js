@@ -1,35 +1,42 @@
-const EVENTS_COUNT = 15;
-
-import {generateEvents} from '../mock/trip-events.js';
 import {MONTHS} from '../const.js';
-import {formatTime, getEventsPerDay} from '../utils/common.js';
+import {formatTime/* , getEventsPerDay */} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
-const tripEvents = generateEvents(EVENTS_COUNT);
+const SORTED_ARRRAY_KEY = `sorted`;
 
-const eventsPerDay = getEventsPerDay(tripEvents);
+function createTripDay(day, month, year, index) {
 
-const createTripDay = (day, month, year, index) => {
+  let dayInfo;
+
+  if (arguments.length === 0) {
+    dayInfo = ``;
+  } else {
+    dayInfo =
+    /* html */
+    `<span class="day__counter">${index}</span>
+    <time class="day__date" datetime="${year}-${formatTime(month)}-${formatTime(day)}">${MONTHS[month]} ${day}</time>`;
+  }
 
   return (
     /* html */
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${index}</span>
-        <time class="day__date" datetime="${year}-${formatTime(month)}-${formatTime(day)}">${MONTHS[month]} ${day}</time>
+        ${dayInfo}
       </div>
       <ul class="trip-events__list">
       </ul>
     </li>`);
-};
+}
 
-const createTripDaysTemplate = () => {
+const createTripDaysTemplate = (structuredEvents) => {
 
   let template = ``;
 
-  for (const day in eventsPerDay) {
-    if (eventsPerDay[day].length !== 0) {
-      const date = eventsPerDay[day][0].startDate;
+  for (const day in structuredEvents) {
+    if (day === SORTED_ARRRAY_KEY) {
+      template = createTripDay();
+    } else {
+      const date = structuredEvents[day][0].startDate;
       template += createTripDay(date.getDate(), date.getMonth(), date.getFullYear(), day) + `\n`;
     }
   }
@@ -38,19 +45,29 @@ const createTripDaysTemplate = () => {
 };
 
 
-const createTripEventsList = () => {
+const createTripEventsList = (structuredEvents) => {
   return (
     /* html */
     `<ul class="trip-days">
-      ${createTripDaysTemplate()}
+      ${createTripDaysTemplate(structuredEvents)}
     </ul>`
   );
 };
 
 class TripEventsList extends AbstractComponent {
+  constructor(structuredEvents) {
+    super();
+
+    this._structuredEvents = structuredEvents;
+  }
+
   getTemplate() {
-    return createTripEventsList();
+    return createTripEventsList(this._structuredEvents);
+  }
+
+  setEvents(events) {
+    this._structuredEvents = events;
   }
 }
 
-export {TripEventsList as default, eventsPerDay};
+export {TripEventsList as default, SORTED_ARRRAY_KEY};

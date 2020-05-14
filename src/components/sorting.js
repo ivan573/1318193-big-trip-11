@@ -1,5 +1,11 @@
 import AbstractComponent from "./abstract-component.js";
 
+const SortType = {
+  EVENT: `Event`,
+  TIME: `Time`,
+  PRICE: `Price`
+};
+
 const createSortingTemplate = () => {
   return (
     /* html */
@@ -7,12 +13,12 @@ const createSortingTemplate = () => {
       <span class="trip-sort__item  trip-sort__item--day"></span>
 
       <div class="trip-sort__item  trip-sort__item--event">
-        <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event">
+        <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" checked>
         <label class="trip-sort__btn" for="sort-event">Event</label>
       </div>
 
       <div class="trip-sort__item  trip-sort__item--time">
-        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" checked>
+        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
         <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
           Time
         </label>
@@ -31,9 +37,38 @@ const createSortingTemplate = () => {
 };
 
 class Sorting extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currentSortType = SortType.EVENT;
+  }
+
   getTemplate() {
     return createSortingTemplate();
   }
+
+  getSortType() {
+    return this._currentSortType;
+  }
+
+  setSortTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+
+      if (evt.target.tagName !== `LABEL`) {
+        return;
+      }
+
+      const sortType = evt.target.textContent.trim();
+
+      if (this._currentSortType === sortType) {
+        return;
+      }
+
+      this._currentSortType = sortType;
+
+      handler(this._currentSortType);
+    });
+  }
 }
 
-export {Sorting as default};
+export {Sorting as default, SortType};
