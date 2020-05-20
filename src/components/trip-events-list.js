@@ -1,5 +1,5 @@
 import {MONTHS} from '../const.js';
-import {formatTime/* , getEventsPerDay */} from '../utils/common.js';
+import {formatTime} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
 const SORTED_ARRRAY_KEY = `sorted`;
@@ -33,7 +33,7 @@ const createTripDaysTemplate = (structuredEvents) => {
   let template = ``;
 
   for (const day in structuredEvents) {
-    if (day === SORTED_ARRRAY_KEY) {
+    if (day === SORTED_ARRRAY_KEY || Object.keys(structuredEvents).length === 0) {
       template = createTripDay();
     } else {
       const date = structuredEvents[day][0].startDate;
@@ -63,10 +63,6 @@ class TripEventsList extends AbstractComponent {
 
   getTemplate() {
     return createTripEventsList(this._structuredEvents);
-  }
-
-  setEvents(events) {
-    this._structuredEvents = events;
   }
 }
 

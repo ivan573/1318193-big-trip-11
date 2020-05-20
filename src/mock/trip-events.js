@@ -60,6 +60,7 @@ const generateEvent = () => {
     startDate,
     endDate: getRandomDate(new Date(startDate.getTime())),
     cost: Math.ceil(Math.random() * 50) * COST_INCREMENT,
+    isFavorite: Math.random() > 0.5,
     extraOffers: [
       {
         title: `Order Uber`,
