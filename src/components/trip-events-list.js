@@ -1,21 +1,15 @@
-import {MONTHS} from '../const.js';
-import {formatTime} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
+
+import moment from "moment";
 
 const SORTED_ARRRAY_KEY = `sorted`;
 
-function createTripDay(day, month, year, index) {
-
-  let dayInfo;
-
-  if (arguments.length === 0) {
-    dayInfo = ``;
-  } else {
-    dayInfo =
+function createTripDay(date, index) {
+  const dayInfo = arguments.length === 0 ? `` : (
     /* html */
     `<span class="day__counter">${index}</span>
-    <time class="day__date" datetime="${year}-${formatTime(month)}-${formatTime(day)}">${MONTHS[month]} ${day}</time>`;
-  }
+    <time class="day__date" datetime="${moment(date).format(`YYYY-MM-DD`)}">${moment(date).format(`MMM D`).toUpperCase()}</time>`
+  );
 
   return (
     /* html */
@@ -37,7 +31,7 @@ const createTripDaysTemplate = (structuredEvents) => {
       template = createTripDay();
     } else {
       const date = structuredEvents[day][0].startDate;
-      template += createTripDay(date.getDate(), date.getMonth(), date.getFullYear(), day) + `\n`;
+      template += createTripDay(date, day) + `\n`;
     }
   }
 
