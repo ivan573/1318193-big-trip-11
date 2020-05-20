@@ -1,6 +1,10 @@
 import {formatType, formatDate} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
+
 const creareOffersTemplate = (offers) => {
   let template = ``;
 
@@ -188,9 +192,14 @@ class EventForm extends AbstractSmartComponent {
     super();
 
     this._event = event;
+
+    this._flatpickr = null;
+
     this._submitHandler = null;
     this._addToFavoriteHandler = null;
     this._changeTypeHandler = null;
+
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -206,7 +215,31 @@ class EventForm extends AbstractSmartComponent {
   rerender() {
     super.rerender();
 
-    // this._applyFlatpickr();
+    this._applyFlatpickr();
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const apply = (element, date) => {
+      this._flatpickr = flatpickr(element, {
+        enableTime: true,
+        altFormat: `d/m/y H:i`,
+        dateFormat: `d/m/y H:i`,
+        altInput: true,
+        allowInput: true,
+        defaultDate: date || `today`
+      });
+    };
+
+    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
+
+    apply(startDateElement, this._event.startDate);
+    apply(endDateElement, this._event.endDate);
   }
 
   setSubmitHandler(handler) {
