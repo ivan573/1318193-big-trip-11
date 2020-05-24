@@ -3,6 +3,11 @@ import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
   let template = ``;
+
+  if (!offers) {
+    return template;
+  }
+
   offers.forEach((it) => (
     template +=
     /* html */

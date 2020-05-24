@@ -53,8 +53,10 @@ const getRandomDescription = () => {
 
 const generateEvent = () => {
   const startDate = getRandomDate();
+  startDate.setHours(startDate.getHours() - 1);
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
     startDate,

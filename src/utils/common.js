@@ -55,6 +55,7 @@ const getDuration = (start, end) => {
 };
 
 const getEventsPerDay = (events) => {
+
   const isSameDate = (originalDate, checkedDate) => {
     return convertDateToString(originalDate) === convertDateToString(checkedDate);
   };
