@@ -1,4 +1,4 @@
-import {formatType, formatDate} from "../utils/common.js";
+import {formatType} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 import flatpickr from "flatpickr";
