@@ -16,7 +16,7 @@ const creareOffersTemplate = (offers) => {
     template +=
     /* html */
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.shortTitle}-1" type="checkbox" name="event-offer-${it.shortTitle}-1" checked>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.shortTitle}-1" type="checkbox" name="event-offer-${it.shortTitle}" checked>
       <label class="event__offer-label" for="event-offer-${it.shortTitle}-1">
         <span class="event__offer-title">${it.title}</span>
         &plus;
@@ -139,12 +139,12 @@ const createEventFormTemplate = (event) => {
               <label class="visually-hidden" for="event-start-time-1">
                 From
               </label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(startDate)}">
+              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">
                 To
               </label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(endDate)}">
+              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
             </div>
 
             <div class="event__field-group  event__field-group--price">
@@ -181,7 +181,7 @@ const createEventFormTemplate = (event) => {
 
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-              <p class="event__destination-description" name="destination-description">${info.description}</p>
+              <p class="event__destination-description">${info.description}</p>
 
               <div class="event__photos-container">
                 <div class="event__photos-tape">
@@ -198,14 +198,12 @@ const createEventFormTemplate = (event) => {
 const parseFormData = (formData) => {
   const startDate = formData.get(`event-start-time`);
   const endDate = formData.get(`event-end-time`);
-  // const offers = formData.get(`event-offer`);
-  // console.log(offers);
 
   return {
     type: setFirstLetterToCapital(formData.get(`event-type`)),
     destination: formData.get(`event-destination`),
-    startDate: startDate ? new Date(startDate) : null,
-    endDate: endDate ? new Date(endDate) : null,
+    startDate: new Date(startDate),
+    endDate: new Date(endDate),
     cost: formData.get(`event-price`),
     isFavorite: (formData.get(`event-favorite`) === `on`),
     extraOffers: null,
@@ -226,10 +224,10 @@ class EventForm extends AbstractSmartComponent {
 
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
-    this._addToFavoriteHandler = null;
+    // this._addToFavoriteHandler = null;
     this._changeTypeHandler = null;
 
-    this._changePriceHandler = null;
+    // this._changePriceHandler = null;
     // this._changeStartDateHandler = null; // test
 
     this._applyFlatpickr();
@@ -251,11 +249,7 @@ class EventForm extends AbstractSmartComponent {
   recoverListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
-    this.setAddToFavoriteHandler(this._addToFavoriteHandler);
     this.setChangeTypeHandlers(this._changeTypeHandler);
-
-    this.setChangePriceHandler(this._changePriceHandler);
-    // this.setChangeStartDateHandler(this._changeStartDateHandler); // test
   }
 
   rerender() {
@@ -284,30 +278,12 @@ class EventForm extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
-  setAddToFavoriteHandler(handler) {
-    this._addToFavoriteHandler = handler;
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-    .addEventListener(`click`, this._addToFavoriteHandler);
-  }
-
   setChangeTypeHandlers(handler) {
     this._changeTypeHandler = handler;
     this.getElement().querySelectorAll(`.event__type-label`).forEach((it) => {
       it.addEventListener(`click`, this._changeTypeHandler);
     });
   }
-
-  setChangePriceHandler(handler) {
-    this._changeTypeHandler = handler;
-    this.getElement().querySelector(`.event__input--price`)
-    .addEventListener(`change`, this._changeTypeHandler);
-  }
-
-  // setChangeStartDateHandler(handler) { // test
-  //   this._changeStartDateHandler = handler;
-  //   this.getElement().querySelector(`input[name=event-start-time]`)
-  //   .addEventListener(`change`, this._changeStartDateHandler);
-  // }
 
   _applyFlatpickr() {
     if (this._flatpickr) {
@@ -319,9 +295,9 @@ class EventForm extends AbstractSmartComponent {
       this._flatpickr = flatpickr(element, {
         enableTime: true,
         altFormat: `d/m/y H:i`,
-        dateFormat: `d/m/y H:i`,
+        dateFormat: `Y-m-dTH:i:S`,
         altInput: true,
-        allowInput: true,
+        // allowInput: true,
         defaultDate: date || `today`
       });
     };

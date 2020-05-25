@@ -38,12 +38,8 @@ const getTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
-const getFullDate = (date) => {
-  return `${convertDateToString(date)}T${getTime(date)}`;
-};
-
 const getDuration = (start, end) => {
-  const duration = (end - start);
+  const duration = (end.setSeconds(0) - start.setSeconds(0));
   let minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
   if (minutes < MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
@@ -87,4 +83,4 @@ const getEventsPerDay = (events) => {
   return eventsPerDay;
 };
 
-export {formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration, getEventsPerDay};
+export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay};

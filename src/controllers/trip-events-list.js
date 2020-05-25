@@ -151,10 +151,14 @@ class TripController {
     remove(this._tripEventsListComponent);
     this._eventsModel.setEvents(this._eventsModel.getEvents(), this._sortingComponent.getSortType());
     this._eventControllers = this._renderEvents(this._eventsModel.getFilteredEvents(), this._onDataChange, this._onViewChange);
+
+    this._creatingEvent = null; // test
   }
 
   _onFilterChange() {
     this._updateEvents();
+
+    this._creatingEvent = null;
   }
 
   _onNewEventButtonClick() {

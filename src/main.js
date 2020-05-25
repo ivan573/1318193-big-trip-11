@@ -10,7 +10,7 @@ import {render} from './utils/render.js';
 
 import {generateEvents} from './mock/trip-events.js';
 
-const EVENTS_COUNT = 15;
+const EVENTS_COUNT = 3; //15
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = document.querySelector(`.trip-controls`);

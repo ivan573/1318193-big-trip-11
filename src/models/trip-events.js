@@ -15,6 +15,10 @@ const getSortedEvents = (events, sortType) => {
   const eventsToSort = events.slice();
 
   const getDuration = (firstDate, secondDate) => {
+    if (typeof firstDate === `string` && typeof secondDate === `string`) {
+      firstDate = new Date(secondDate);
+      secondDate = new Date(secondDate);
+    }
     return secondDate.getTime() - firstDate.getTime();
   };
 

@@ -55,35 +55,18 @@ class TripEventController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventFormComponent.setAddToFavoriteHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite
-      }));
-    });
-
     this._eventFormComponent.setChangeTypeHandlers((evt) => {
       this._onDataChange(this, event, Object.assign({}, event, {
         type: evt.target.textContent
       }));
     });
 
-    this._eventFormComponent.setChangePriceHandler((evt) => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        cost: evt.target.value
-      }));
-    });
-
-    // this._eventFormComponent.setChangeStartDateHandler((evt) => { // test
-    //   this._onDataChange(this, event, Object.assign({}, event, {
-    //     startDate: evt.target.value
-    //   }));
-    // });
-
     this._eventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._eventFormComponent.getData();
       this._onDataChange(this, event, data, Mode.DEFAULT);
     });
+
     this._eventFormComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, event, null));
 
     switch (mode) {

@@ -8,7 +8,7 @@ function createTripDay(date, index) {
   const dayInfo = arguments.length === 0 ? `` : (
     /* html */
     `<span class="day__counter">${index}</span>
-    <time class="day__date" datetime="${moment(date).format(`YYYY-MM-DD`)}">${moment(date).format(`MMM D`).toUpperCase()}</time>`
+    <time class="day__date" datetime="${date}">${moment(date).format(`MMM D`).toUpperCase()}</time>`
   );
 
   return (
