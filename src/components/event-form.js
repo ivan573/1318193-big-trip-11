@@ -1,4 +1,4 @@
-import {formatType, formatDate} from "../utils/common.js";
+import {formatType} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 import flatpickr from "flatpickr";
@@ -7,6 +7,10 @@ import "flatpickr/dist/flatpickr.min.css";
 
 const creareOffersTemplate = (offers) => {
   let template = ``;
+
+  if (!offers) {
+    return template;
+  }
 
   offers.forEach((it) => {
     template +=
@@ -34,11 +38,19 @@ const createPhotosTemplate = (photos) => {
   return template;
 };
 
+const setFirstLetterToCapital = (string) => {
+  return string[0].toUpperCase() + string.slice(1);
+};
+
 const createEventFormTemplate = (event) => {
   const {type, destination, startDate, endDate, cost, isFavorite, extraOffers, info} = event;
 
   const setChecked = (thisType) => {
     return type.toLowerCase() === thisType ? `checked` : ``;
+  };
+
+  const setSelected = (place) => {
+    return destination === place ? `selected` : ``;
   };
 
   return (
@@ -118,25 +130,24 @@ const createEventFormTemplate = (event) => {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${formatType(type)}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
-              <datalist id="destination-list-1">
-                <option value="Amsterdam"></option>
-                <option value="Geneva"></option>
-                <option value="Chamonix"></option>
-                <option value="Saint Petersburg"></option>
-              </datalist>
+              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination">
+	              <option value="Amsterdam" ${setSelected(`Amsterdam`)}>Amsterdam</option>
+                <option value="Geneva" ${setSelected(`Geneva`)}>Geneva</option>
+                <option value="Chamonix" ${setSelected(`Chamonix`)}>Chamonix</option>
+                <option value="Saint Petersburg" ${setSelected(`Saint Petersburg`)}>Saint Petersburg</option>
+              </select>
             </div>
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">
                 From
               </label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(startDate)}">
+              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">
                 To
               </label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(endDate)}">
+              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
             </div>
 
             <div class="event__field-group  event__field-group--price">
@@ -144,7 +155,7 @@ const createEventFormTemplate = (event) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+              <input type="number" min="0" max="100000" class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -187,6 +198,26 @@ const createEventFormTemplate = (event) => {
   );
 };
 
+const parseFormData = (formData) => {
+
+  const startDate = formData.get(`event-start-time`);
+  const endDate = formData.get(`event-end-time`);
+
+  return {
+    type: setFirstLetterToCapital(formData.get(`event-type`)),
+    destination: formData.get(`event-destination`),
+    startDate: new Date(startDate),
+    endDate: new Date(endDate),
+    cost: formData.get(`event-price`),
+    isFavorite: (formData.get(`event-favorite`) === `on`),
+    extraOffers: null,
+    info: {
+      description: ``,
+      photos: [``]
+    }
+  };
+};
+
 class EventForm extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -196,8 +227,12 @@ class EventForm extends AbstractSmartComponent {
     this._flatpickr = null;
 
     this._submitHandler = null;
-    this._addToFavoriteHandler = null;
+    this._deleteButtonClickHandler = null;
+    // this._addToFavoriteHandler = null;
     this._changeTypeHandler = null;
+
+    // this._changePriceHandler = null;
+    // this._changeStartDateHandler = null; // test
 
     this._applyFlatpickr();
   }
@@ -206,9 +241,18 @@ class EventForm extends AbstractSmartComponent {
     return createEventFormTemplate(this._event);
   }
 
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+
   recoverListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setAddToFavoriteHandler(this._addToFavoriteHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setChangeTypeHandlers(this._changeTypeHandler);
   }
 
@@ -216,6 +260,48 @@ class EventForm extends AbstractSmartComponent {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
+  setSubmitHandler(handler) {
+    this._submitHandler = handler;
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, this._submitHandler);
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
+  }
+
+  setChangeTypeHandlers(handler) {
+    this._changeTypeHandler = handler;
+    this.getElement().querySelectorAll(`.event__type-label`).forEach((it) => {
+      it.addEventListener(`click`, this._changeTypeHandler);
+    });
+  }
+
+  onTypeChange(type) {
+    const chosenType = type.toLowerCase();
+
+    const checkedTypeElement = this.getElement().querySelector(`.event__type-input:checked`);
+    const chosentTypeElement = this.getElement().querySelector(`.event__type-input[value="${chosenType}"]`);
+    const eventTypeIconElement = this.getElement().querySelector(`.event__type-icon`);
+    // const eventTypeListElement = this.getElement().querySelector(`.event__type-list`); // (`.event__type-list`); `.event__type-toggle`
+    const eventTypeOutPutElement = this.getElement().querySelector(`.event__type-output`);
+
+    checkedTypeElement.removeAttribute(`checked`);
+    chosentTypeElement.setAttribute(`checked`, `checked`);
+    eventTypeIconElement.src = `img/icons/${chosenType}.png`;
+    eventTypeOutPutElement.textContent = setFirstLetterToCapital(formatType(chosenType));
   }
 
   _applyFlatpickr() {
@@ -228,9 +314,9 @@ class EventForm extends AbstractSmartComponent {
       this._flatpickr = flatpickr(element, {
         enableTime: true,
         altFormat: `d/m/y H:i`,
-        dateFormat: `d/m/y H:i`,
+        dateFormat: `Z`,
         altInput: true,
-        allowInput: true,
+        // allowInput: true,
         defaultDate: date || `today`
       });
     };
@@ -240,25 +326,6 @@ class EventForm extends AbstractSmartComponent {
 
     apply(startDateElement, this._event.startDate);
     apply(endDateElement, this._event.endDate);
-  }
-
-  setSubmitHandler(handler) {
-    this._submitHandler = handler;
-    this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, this._submitHandler);
-  }
-
-  setAddToFavoriteHandler(handler) {
-    this._addToFavoriteHandler = handler;
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-    .addEventListener(`click`, this._addToFavoriteHandler);
-  }
-
-  setChangeTypeHandlers(handler) {
-    this._changeTypeHandler = handler;
-    this.getElement().querySelectorAll(`.event__type-label`).forEach((it) => {
-      it.addEventListener(`click`, this._changeTypeHandler);
-    });
   }
 }
 

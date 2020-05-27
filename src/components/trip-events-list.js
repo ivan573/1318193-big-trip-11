@@ -8,7 +8,7 @@ function createTripDay(date, index) {
   const dayInfo = arguments.length === 0 ? `` : (
     /* html */
     `<span class="day__counter">${index}</span>
-    <time class="day__date" datetime="${moment(date).format(`YYYY-MM-DD`)}">${moment(date).format(`MMM D`).toUpperCase()}</time>`
+    <time class="day__date" datetime="${date}">${moment(date).format(`MMM D`).toUpperCase()}</time>`
   );
 
   return (
@@ -26,8 +26,12 @@ const createTripDaysTemplate = (structuredEvents) => {
 
   let template = ``;
 
+  if (Object.keys(structuredEvents).length === 0) {
+    template = createTripDay();
+  }
+
   for (const day in structuredEvents) {
-    if (day === SORTED_ARRRAY_KEY || Object.keys(structuredEvents).length === 0) {
+    if (day === SORTED_ARRRAY_KEY) {
       template = createTripDay();
     } else {
       const date = structuredEvents[day][0].startDate;

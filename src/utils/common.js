@@ -38,12 +38,8 @@ const getTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
-const getFullDate = (date) => {
-  return `${convertDateToString(date)}T${getTime(date)}`;
-};
-
 const getDuration = (start, end) => {
-  const duration = (end - start);
+  const duration = (end.setSeconds(0) - start.setSeconds(0));
   let minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
   if (minutes < MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
@@ -55,9 +51,14 @@ const getDuration = (start, end) => {
 };
 
 const getEventsPerDay = (events) => {
+
   const isSameDate = (originalDate, checkedDate) => {
     return convertDateToString(originalDate) === convertDateToString(checkedDate);
   };
+
+  events = events.sort((a, b) => {
+    return a.startDate - b.startDate;
+  });
 
   const eventsPerDay = {};
   const uniqueDays = {};
@@ -86,4 +87,4 @@ const getEventsPerDay = (events) => {
   return eventsPerDay;
 };
 
-export {formatType, getEventTitle, formatDate, getFullDate, getTime, getDuration, getEventsPerDay};
+export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay};
