@@ -26,8 +26,12 @@ const createTripDaysTemplate = (structuredEvents) => {
 
   let template = ``;
 
+  if (Object.keys(structuredEvents).length === 0) {
+    template = createTripDay();
+  }
+
   for (const day in structuredEvents) {
-    if (day === SORTED_ARRRAY_KEY || Object.keys(structuredEvents).length === 0) {
+    if (day === SORTED_ARRRAY_KEY) {
       template = createTripDay();
     } else {
       const date = structuredEvents[day][0].startDate;

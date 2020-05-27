@@ -49,6 +49,10 @@ const createEventFormTemplate = (event) => {
     return type.toLowerCase() === thisType ? `checked` : ``;
   };
 
+  const setSelected = (place) => {
+    return destination === place ? `selected` : ``;
+  };
+
   return (
     /* html */
     `<li class="trip-events__item">
@@ -126,13 +130,12 @@ const createEventFormTemplate = (event) => {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${formatType(type)}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" readonly>
-              <datalist id="destination-list-1">
-                <option value="Amsterdam"></option>
-                <option value="Geneva"></option>
-                <option value="Chamonix"></option>
-                <option value="Saint Petersburg"></option>
-              </datalist>
+              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination">
+	              <option value="Amsterdam" ${setSelected(`Amsterdam`)}>Amsterdam</option>
+                <option value="Geneva" ${setSelected(`Geneva`)}>Geneva</option>
+                <option value="Chamonix" ${setSelected(`Chamonix`)}>Chamonix</option>
+                <option value="Saint Petersburg" ${setSelected(`Saint Petersburg`)}>Saint Petersburg</option>
+              </select>
             </div>
 
             <div class="event__field-group  event__field-group--time">
@@ -196,6 +199,7 @@ const createEventFormTemplate = (event) => {
 };
 
 const parseFormData = (formData) => {
+
   const startDate = formData.get(`event-start-time`);
   const endDate = formData.get(`event-end-time`);
 
@@ -285,6 +289,21 @@ class EventForm extends AbstractSmartComponent {
     });
   }
 
+  onTypeChange(type) {
+    const chosenType = type.toLowerCase();
+
+    const checkedTypeElement = this.getElement().querySelector(`.event__type-input:checked`);
+    const chosentTypeElement = this.getElement().querySelector(`.event__type-input[value="${chosenType}"]`);
+    const eventTypeIconElement = this.getElement().querySelector(`.event__type-icon`);
+    // const eventTypeListElement = this.getElement().querySelector(`.event__type-list`); // (`.event__type-list`); `.event__type-toggle`
+    const eventTypeOutPutElement = this.getElement().querySelector(`.event__type-output`);
+
+    checkedTypeElement.removeAttribute(`checked`);
+    chosentTypeElement.setAttribute(`checked`, `checked`);
+    eventTypeIconElement.src = `img/icons/${chosenType}.png`;
+    eventTypeOutPutElement.textContent = setFirstLetterToCapital(formatType(chosenType));
+  }
+
   _applyFlatpickr() {
     if (this._flatpickr) {
       this._flatpickr.destroy();
@@ -295,7 +314,7 @@ class EventForm extends AbstractSmartComponent {
       this._flatpickr = flatpickr(element, {
         enableTime: true,
         altFormat: `d/m/y H:i`,
-        dateFormat: `Y-m-dTH:i:S`,
+        dateFormat: `Z`,
         altInput: true,
         // allowInput: true,
         defaultDate: date || `today`

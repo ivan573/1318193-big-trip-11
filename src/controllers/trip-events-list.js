@@ -63,7 +63,7 @@ class TripController {
     const tripDayElement = document.querySelector(`.trip-events__list`);
 
     this._creatingEvent = new TripEventController(tripDayElement, this._onDataChange, this._onViewChange);
-    this._eventControllers.unshift(this._creatingEvent);
+    // this._eventControllers.unshift(this._creatingEvent);
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
   }
 
@@ -84,21 +84,25 @@ class TripController {
 
     const tripDayElements = document.querySelectorAll(`.trip-days__item`);
 
-    tripDayElements.forEach((element) => {
-      const eventsList = element.querySelector(`.trip-events__list`);
+    if (Object.keys(events).length > 0) {
+      tripDayElements.forEach((element) => {
 
-      if (events.hasOwnProperty(sortedEventsKey)) {
-        events[sortedEventsKey].forEach((event) => {
-          eventControllers.push(renderEvent(event, eventsList));
-        });
-      } else {
-        const dayNumber = element.querySelector(`.day__counter`).textContent;
+        const eventsList = element.querySelector(`.trip-events__list`);
 
-        events[dayNumber].forEach((event) => {
-          eventControllers.push(renderEvent(event, eventsList));
-        });
-      }
-    });
+        if (events.hasOwnProperty(sortedEventsKey)) {
+          events[sortedEventsKey].forEach((event) => {
+            eventControllers.push(renderEvent(event, eventsList));
+          });
+        } else {
+          const dayNumber = element.querySelector(`.day__counter`).textContent;
+
+          events[dayNumber].forEach((event) => {
+            eventControllers.push(renderEvent(event, eventsList));
+          });
+        }
+      });
+
+    }
 
     return eventControllers;
   }
@@ -127,12 +131,13 @@ class TripController {
       this._creatingEvent = null;
       if (newData === null) {
         eventController.destroy();
-        this._updateEvents();
       } else {
         this._eventsModel.addEvent(newData);
         eventController.render(newData, EventControllerMode.DEFAULT);
 
         this.__eventControllers = [].concat(eventController, this._eventControllers);
+
+        this._updateEvents();
       }
     } else if (newData === null) {
       this._eventsModel.removeEvent(oldData.id);
@@ -142,6 +147,7 @@ class TripController {
 
       if (isSuccess) {
         eventController.render(newData, mode);
+        this._updateEvents();
       }
     }
   }
@@ -152,7 +158,7 @@ class TripController {
     this._eventsModel.setEvents(this._eventsModel.getEvents(), this._sortingComponent.getSortType());
     this._eventControllers = this._renderEvents(this._eventsModel.getFilteredEvents(), this._onDataChange, this._onViewChange);
 
-    this._creatingEvent = null; // test
+    this._creatingEvent = null;
   }
 
   _onFilterChange() {

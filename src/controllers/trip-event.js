@@ -56,9 +56,7 @@ class TripEventController {
     });
 
     this._eventFormComponent.setChangeTypeHandlers((evt) => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        type: evt.target.textContent
-      }));
+      this._eventFormComponent.onTypeChange(evt.target.textContent);
     });
 
     this._eventFormComponent.setSubmitHandler((evt) => {

@@ -45,7 +45,6 @@ class FilterController {
   }
 
   // _onDataChange() {
-  //   console.log(`hi`);
   //   // this.render();
   // }
 }

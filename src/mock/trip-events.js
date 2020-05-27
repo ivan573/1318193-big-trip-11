@@ -56,7 +56,7 @@ const generateEvent = () => {
   startDate.setHours(startDate.getHours() - 1);
 
   return {
-    id: String(new Date() + Math.random()),
+    id: String(Math.floor(Math.random() * 100)),
     type: getRandomArrayElement(EVENT_TYPES),
     destination: getRandomArrayElement(destinations),
     startDate,
@@ -78,9 +78,7 @@ const generateEvent = () => {
 };
 
 const generateEvents = (count) => {
-  return new Array(count).fill(``).map(generateEvent).sort((a, b) => {
-    return a.startDate - b.startDate;
-  });
+  return new Array(count).fill(``).map(generateEvent);
 };
 
 export {generateEvent, generateEvents};

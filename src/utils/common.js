@@ -56,6 +56,10 @@ const getEventsPerDay = (events) => {
     return convertDateToString(originalDate) === convertDateToString(checkedDate);
   };
 
+  events = events.sort((a, b) => {
+    return a.startDate - b.startDate;
+  });
+
   const eventsPerDay = {};
   const uniqueDays = {};
 

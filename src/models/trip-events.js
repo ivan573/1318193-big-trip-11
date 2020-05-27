@@ -7,20 +7,20 @@ import {FilterType} from "../const.js";
 
 const DEFAULT_SORT_TYPE = SortType.EVENT;
 
+const getDuration = (firstDate, secondDate) => {
+  if (typeof firstDate === `string` && typeof secondDate === `string`) {
+    firstDate = new Date(secondDate);
+    secondDate = new Date(secondDate);
+  }
+  return secondDate.getTime() - firstDate.getTime();
+};
+
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = {
     sorted: []
   };
 
   const eventsToSort = events.slice();
-
-  const getDuration = (firstDate, secondDate) => {
-    if (typeof firstDate === `string` && typeof secondDate === `string`) {
-      firstDate = new Date(secondDate);
-      secondDate = new Date(secondDate);
-    }
-    return secondDate.getTime() - firstDate.getTime();
-  };
 
   switch (sortType) {
     case SortType.EVENT:
@@ -38,24 +38,15 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-// const getEvents = (object) => {
-//   const array = Object.values(object);
-//   let events = [];
-//   array.forEach((it) => {
-//     events = events.concat(it);
-//   });
-//   return events;
-// };
-
 class TripEvents {
   constructor() {
     this._events = [];
-    this._filteredEvents = {};
+    this._filteredEvents = [];
     // this._structuredEvents = {};
     this._currentSortType = DEFAULT_SORT_TYPE;
     this._activeFilterType = FilterType.EVERYTHING;
 
-    this._dataChangeHandlers = [];
+    // this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
@@ -105,14 +96,14 @@ class TripEvents {
     return true;
   }
 
-  addEvent(task) {
-    this._updateEvents([].concat(task, this._events));
+  addEvent(event) {
+    this._updateEvents([].concat(event, this._events));
   }
 
-
-  setDataChangeHandler(handler) {
-    this._dataChangeHandlers.push(handler);
-  }
+  // вызывается только в контроллере фильтров, где бесполезен
+  // setDataChangeHandler(handler) {
+  //   this._dataChangeHandlers.push(handler);
+  // }
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
@@ -129,7 +120,7 @@ class TripEvents {
     this._events = events;
     // this._structuredEvents = getSortedEvents(this._events, this._currentSortType);
 
-    this._callHandlers(this._dataChangeHandlers);
+    // this._callHandlers(this._dataChangeHandlers);
   }
 }
 
