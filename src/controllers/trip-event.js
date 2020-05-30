@@ -4,34 +4,30 @@ import TripEventComponent from '../components/trip-event.js';
 import EventFormComponent from '../components/event-form.js';
 
 const Mode = {
-  ADDING: `adding`,
   DEFAULT: `default`,
-  EDIT: `edit`
+  EDIT: `edit`,
+  ADDING: `adding`
 };
 
 const EmptyEvent = {
-  type: `Flight`,
-  destination: ``,
+  type: null,
+  destination: null,
   startDate: new Date(),
   endDate: new Date(),
   cost: 0,
   isFavorite: false,
-  extraOffers: [
-    {
-      title: `Order Uber`,
-      shortTitle: `uber`,
-      price: 20
-    }
-  ],
+  extraOffers: null,
   info: {
-    description: `Temporary description`,
-    photos: [`http://picsum.photos/248/152?r=${Math.random()}`]
+    description: null,
+    photos: null
   }
 };
 
 class TripEventController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, destinationsModel, offersModel, onDataChange, onViewChange) {
     this._container = container;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
@@ -47,8 +43,13 @@ class TripEventController {
     const oldEventFormComponent = this._eventFormComponent;
     this._mode = mode;
 
+    const info = this._destinationsModel.getDestinationForName(event.destination);
+    const offers = (event === EmptyEvent) ? null : this._offersModel.getOfferForType(event.type);
+    const destinationsList = this._destinationsModel.getDestinationsList();
+
+
     this._tripEventComponent = new TripEventComponent(event);
-    this._eventFormComponent = new EventFormComponent(event);
+    this._eventFormComponent = new EventFormComponent(event, info, offers, destinationsList);
 
     this._tripEventComponent.setEditButtonClickHandler(() => {
       this._replaceEventToEdit();
@@ -56,26 +57,33 @@ class TripEventController {
     });
 
     this._eventFormComponent.setChangeTypeHandlers((evt) => {
-      this._eventFormComponent.onTypeChange(evt.target.textContent);
+      const type = evt.target.textContent;
+      const offersForType = this._offersModel.getOfferForType(type);
+      this._eventFormComponent.onTypeChange(type, offersForType);
+    });
+
+    this._eventFormComponent.setChangeDestinationHandler((evt) => {
+      const options = evt.target.querySelectorAll(`option`);
+      const selectedIndex = evt.target.options.selectedIndex;
+      const name = options[selectedIndex].value;
+      const newInfo = this._destinationsModel.getDestinationForName(name);
+      this._eventFormComponent.onDestinationChange(newInfo);
     });
 
     this._eventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
+
       const data = this._eventFormComponent.getData();
+
+      if (Object.values(data).some((value) => value === null) || data.startDate > data.endDate) {
+        return;
+      }
       this._onDataChange(this, event, data, Mode.DEFAULT);
     });
 
     this._eventFormComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, event, null));
 
     switch (mode) {
-      case Mode.EDIT:
-        if (oldEventFormComponent && oldTripEventComponent) {
-          replace(this._tripEventComponent, oldTripEventComponent);
-          replace(this._eventFormComponent, oldEventFormComponent);
-        } else {
-          render(this._container, this._eventFormComponent, `beforeend`);
-        }
-        break;
       case Mode.DEFAULT:
         if (oldEventFormComponent && oldTripEventComponent) {
           replace(this._tripEventComponent, oldTripEventComponent);
@@ -83,6 +91,14 @@ class TripEventController {
           this._replaceEditToEvent();
         } else {
           render(this._container, this._tripEventComponent, `beforeend`);
+        }
+        break;
+      case Mode.EDIT:
+        if (oldEventFormComponent && oldTripEventComponent) {
+          replace(this._tripEventComponent, oldTripEventComponent);
+          replace(this._eventFormComponent, oldEventFormComponent);
+        } else {
+          render(this._container, this._eventFormComponent, `beforeend`);
         }
         break;
       case Mode.ADDING:

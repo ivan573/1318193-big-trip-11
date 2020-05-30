@@ -38,9 +38,12 @@ const getTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
-const getDuration = (start, end) => {
+const getDuration = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
   const duration = (end.setSeconds(0) - start.setSeconds(0));
-  let minutes = duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+  let minutes = Math.floor(duration / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE);
   if (minutes < MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
   } else {
@@ -70,7 +73,7 @@ const getEventsPerDay = (events) => {
   let counter = 1;
 
   for (const day in uniqueDays) {
-    if (uniqueDays[day] instanceof Date) {
+    if (Object.keys(uniqueDays).length > 0) {
       const correspondingEvents = [];
 
       events.forEach((event) => {
@@ -87,4 +90,8 @@ const getEventsPerDay = (events) => {
   return eventsPerDay;
 };
 
-export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay};
+const capitalizeFirstLetter = (string) => {
+  return string ? string[0].toUpperCase() + string.slice(1) : null;
+};
+
+export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay, capitalizeFirstLetter};
