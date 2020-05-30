@@ -61,7 +61,7 @@ class TripEvents {
   // }
 
   setEvents(events, sortType) {
-    this._updateEvents(Array.from(events).slice(17), sortType);
+    this._updateEvents(Array.from(events), sortType);
   }
 
   setFilter(filterType) {

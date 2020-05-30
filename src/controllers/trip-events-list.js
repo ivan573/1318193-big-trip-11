@@ -32,11 +32,11 @@ class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
+    // this._onFilterChange = this._onFilterChange.bind(this);
     this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
 
     this._sortingComponent.setSortTypeChangeHandler(this._onSortTypeChange);
-    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
+    this._eventsModel.setFilterChangeHandler(this._onSortTypeChange);
 
     this._newEventButtonElement.addEventListener(`click`, this._onNewEventButtonClick);
   }
@@ -70,35 +70,21 @@ class TripController {
   }
 
   createEvent() {
-    // console.log(!!this._creatingEvent);
-    // if (this._creatingEvent) {
-    //   this._creatingEvent.destroy();
-    //   return;
-    // }
-
 
     this._onViewChange();
 
-    if (this._eventsModel.getEvents().length === 0) { // test
+    if (this._eventsModel.getEvents().length === 0) {
       remove(this._noEventsComponent);
+      if (this._tripEventsListComponent) {
+        remove(this._tripEventsListComponent);
+      }
       this._tripEventsListComponent = new TripEventsListComponent(this._eventsModel.getFilteredEvents());
-      render(this._container, this._tripEventsListComponent, `beforeend`); // test
+      render(this._container, this._tripEventsListComponent, `beforeend`);
     }
 
-    const tripDayElement = document.querySelector(`.trip-events__list`);
+    const eventsListElement = document.querySelector(`.trip-events__list`);
 
-    this._creatingEvent = new TripEventController(tripDayElement, this._destinationsModel, this._offersModel, this._onDataChange, this._onViewChange);
-    // this._eventsModel.addEvent(this._creatingEvent); // test
-    // const offers = this._offersModel.getOfferForType(EmptyEvent.type);
-    // this._eventControllers.unshift(this._creatingEvent);
-
-    // if (this._eventControllers.length === 0) {
-    //   this.render();
-    //   remove(this._noEventsComponent);
-
-    //   render(this._container, this._tripEventsListComponent, `beforeend`); // test
-    // }
-
+    this._creatingEvent = new TripEventController(eventsListElement, this._destinationsModel, this._offersModel, this._onDataChange, this._onViewChange);
 
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
   }
@@ -124,24 +110,23 @@ class TripController {
 
       tripDayElements.forEach((element) => {
 
-        const eventsList = element.querySelector(`.trip-events__list`);
-
-        // console.log(events, element);
+        const eventsListElement = element.querySelector(`.trip-events__list`);
 
         if (events.hasOwnProperty(sortedEventsKey)) {
           events[sortedEventsKey].forEach((event) => {
-            eventControllers.push(renderEvent(event, eventsList));
+            eventControllers.push(renderEvent(event, eventsListElement));
           });
         } else {
           const dayNumber = element.querySelector(`.day__counter`).textContent;
 
           events[dayNumber].forEach((event) => {
-            eventControllers.push(renderEvent(event, eventsList));
+            eventControllers.push(renderEvent(event, eventsListElement));
           });
         }
       });
 
     }
+
     return eventControllers;
   }
 
@@ -169,6 +154,9 @@ class TripController {
   }
 
   _onDataChange(eventController, oldData, newData, mode = EventControllerMode.EDIT) {
+    if (this._eventsModel.getEvents().length === 0) {
+      render(this._container.querySelector(`h2`), this._sortingComponent, `afterend`);
+    }
 
     if (oldData === EmptyEvent) {
       this._creatingEvent = null;
@@ -202,11 +190,12 @@ class TripController {
     this._creatingEvent = null;
   }
 
-  _onFilterChange() {
-    this._updateEvents();
+  // _onFilterChange() {
+  //   this._eventsModel.setEvents(this._eventsModel.getEvents(), this._sortingComponent.getSortType());
+  //   this._updateEvents();
 
-    this._creatingEvent = null;
-  }
+  //   this._creatingEvent = null;
+  // }
 
   _onNewEventButtonClick() {
     if (this._creatingEvent) {
