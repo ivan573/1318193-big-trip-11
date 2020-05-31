@@ -94,4 +94,8 @@ const capitalizeFirstLetter = (string) => {
   return string ? string[0].toUpperCase() + string.slice(1) : null;
 };
 
-export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay, capitalizeFirstLetter};
+const getId = (title) => {
+  return `event-offer-${title.replace(/\s+/g, ``).toLowerCase()}`;
+};
+
+export {formatType, getEventTitle, formatDate, getTime, getDuration, getEventsPerDay, capitalizeFirstLetter, getId};

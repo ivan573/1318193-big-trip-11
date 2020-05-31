@@ -12,11 +12,12 @@ const sortedEventsKey = SORTED_ARRRAY_KEY;
 const newEventButtonElement = document.querySelector(`.trip-main__event-add-btn`);
 
 class TripController {
-  constructor(container, eventsModel, destinationsModel, offersModel) {
+  constructor(container, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
+    this._api = api;
 
     this._eventControllers = [];
 
@@ -174,12 +175,14 @@ class TripController {
       this._eventsModel.removeEvent(oldData.id);
       this._updateEvents();
     } else {
-      const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
-
-      if (isSuccess) {
-        eventController.render(newData, mode);
-        this._updateEvents();
-      }
+      this._api.updateEvent(oldData.id, newData)
+        .then((eventModel) => {
+          const isSuccess = this._eventsModel.updateEvent(oldData.id, eventModel);
+          if (isSuccess) {
+            eventController.render(eventModel, mode);
+            this._updateEvents();
+          }
+        });
     }
   }
 

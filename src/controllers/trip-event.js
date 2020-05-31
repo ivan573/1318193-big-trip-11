@@ -1,7 +1,10 @@
+import {getId} from "../utils/common.js";
 import {render, replace, remove} from '../utils/render.js';
 
 import TripEventComponent from '../components/trip-event.js';
 import EventFormComponent from '../components/event-form.js';
+
+import TripEventModel from "../models/trip-event.js";
 
 const Mode = {
   DEFAULT: `default`,
@@ -21,6 +24,34 @@ const EmptyEvent = {
     description: null,
     photos: null
   }
+};
+
+const getChosenOffers = (formData, offers) => {
+  const chosenOffers = [];
+
+  if (offers) {
+    offers.offers.forEach((it) => {
+      if (formData.get(`${getId(it.title)}`) === `on`) {
+        chosenOffers.push(it);
+      }
+    });
+  }
+
+  return chosenOffers;
+};
+
+const parseFormData = (formData, offers) => {
+  return new TripEventModel({
+    "base_price": formData.get(`event-price`),
+    "date_from": formData.get(`event-start-time`),
+    "date_to": formData.get(`event-end-time`),
+    "destination": {
+      "name": formData.get(`event-destination`)
+    },
+    "is_favorite": (formData.get(`event-favorite`) === `on`),
+    "offers": getChosenOffers(formData, offers),
+    "type": formData.get(`event-type`)
+  });
 };
 
 class TripEventController {
@@ -73,7 +104,8 @@ class TripEventController {
     this._eventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
 
-      const data = this._eventFormComponent.getData();
+      const formData = this._eventFormComponent.getData();
+      const data = parseFormData(formData, this._eventFormComponent._offers); // исправить
 
       if (Object.values(data).some((value) => value === null) || data.startDate > data.endDate) {
         return;

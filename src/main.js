@@ -15,8 +15,9 @@ import {render} from './utils/render.js';
 // const EVENTS_COUNT = 3; // 15;
 
 const AUTHORIZATION = `Basic h3770s3rv3rh0wru`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 
 const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
@@ -31,7 +32,7 @@ render(tripControlsElement.querySelector(`h2`), new MenuComponent());
 const filtersController = new FiltersController(tripControlsElement, eventsModel);
 filtersController.render();
 
-const tripController = new TripController(tripEventsElement, eventsModel, destinationsModel, offersModel);
+const tripController = new TripController(tripEventsElement, eventsModel, destinationsModel, offersModel, api);
 
 tripController.renderLoadingMessage();
 

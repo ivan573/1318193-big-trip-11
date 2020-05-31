@@ -13,6 +13,18 @@ class TripEvent {
     this.info = {
       description: data[`destination`][`description`],
       photos: data[`destination`][`pictures`]
+    } || null;
+  }
+
+  toRAW() {
+    return {
+      "base_price": this.cost,
+      "date_from": new Date(this.startDate).toISOString(),
+      "date_to": new Date(this.endDate).toISOString(),
+      "destination": this.destination,
+      "is_favorite": this.isFavorite,
+      "offers": this.extraOffers,
+      "type": this.type.toLowerCase()
     };
   }
 

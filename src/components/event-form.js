@@ -1,4 +1,4 @@
-import {formatType, capitalizeFirstLetter} from "../utils/common.js";
+import {formatType, capitalizeFirstLetter, getId} from "../utils/common.js";
 import {createElement} from '../utils/render.js';
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
@@ -13,9 +13,9 @@ const EventTypes = {
   activity: [`check-in`, `sightseeing`, `restaurant`]
 };
 
-const getId = (title) => {
-  return `event-offer-${title.replace(/\s+/g, ``).toLowerCase()}`;
-};
+// const getId = (title) => {
+//   return `event-offer-${title.replace(/\s+/g, ``).toLowerCase()}`;
+// };
 
 const creareOffersTemplate = (offers, chosenOffers) => {
 
@@ -128,8 +128,13 @@ const createEvetTypeListTemplate = (eventType, types) => {
 const createEventFormTemplate = (event, information, offers, destinationsList) => {
   const {type, destination, startDate, endDate, cost, isFavorite, extraOffers, info} = event;
 
-  const eventPhotos = info ? info.photos : information.photos;
-  const eventDescription = info ? info.description : information.description;
+  let eventPhotos = null;
+  let eventDescription = null;
+
+  if (event.type && event.destination) {
+    eventPhotos = info.photos ? info.photos : information.photos;
+    eventDescription = info.description ? info.description : information.description;
+  }
 
   return (
     /* html */
@@ -206,36 +211,6 @@ const createEventFormTemplate = (event, information, offers, destinationsList) =
   );
 };
 
-const getChosenOffers = (formData, offers) => {
-  const chosenOffers = [];
-
-  if (offers) {
-    offers.offers.forEach((it) => {
-      if (formData.get(`${getId(it.title)}`) === `on`) {
-        chosenOffers.push(it);
-      }
-    });
-  }
-
-  return chosenOffers;
-};
-
-const parseFormData = (formData, offers) => {
-
-  const startDate = formData.get(`event-start-time`);
-  const endDate = formData.get(`event-end-time`);
-
-  return {
-    type: capitalizeFirstLetter(formData.get(`event-type`)),
-    destination: formData.get(`event-destination`),
-    startDate: new Date(startDate),
-    endDate: new Date(endDate),
-    cost: formData.get(`event-price`),
-    isFavorite: (formData.get(`event-favorite`) === `on`),
-    extraOffers: getChosenOffers(formData, offers)
-  };
-};
-
 class EventForm extends AbstractSmartComponent {
   constructor(event, info, offers, destinationsList) {
     super();
@@ -297,7 +272,7 @@ class EventForm extends AbstractSmartComponent {
     const form = this.getElement().querySelector(`form`);
     const formData = new FormData(form);
 
-    return parseFormData(formData, this._offers);
+    return formData;
   }
 
   setSubmitHandler(handler) {
