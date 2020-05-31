@@ -6,6 +6,8 @@ import EventFormComponent from '../components/event-form.js';
 
 import TripEventModel from "../models/trip-event.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
@@ -155,6 +157,17 @@ class TripEventController {
     remove(this._tripEventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
+
+  shake() {
+    this._eventFormComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._tripEventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventFormComponent.getElement().style.animation = ``;
+      this._tripEventComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
 
   _replaceEventToEdit() {
     this._onViewChange();

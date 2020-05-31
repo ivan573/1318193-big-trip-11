@@ -164,16 +164,29 @@ class TripController {
       if (newData === null) {
         eventController.destroy();
       } else {
-        this._eventsModel.addEvent(newData);
-        eventController.render(newData, EventControllerMode.DEFAULT);
-
-        this.__eventControllers = [].concat(eventController, this._eventControllers);
-
-        this._updateEvents();
+        this._api.createEvent(newData)
+          .then((eventModel) => {
+            this._tasksModel.addTask(eventModel);
+            eventController.render(eventModel, EventControllerMode.DEFAULT);
+            // this.__eventControllers = [].concat(eventController, this._eventControllers);
+            this._updateEvents();
+          })
+          .catch(() => {
+            eventController.shake();
+          });
       }
     } else if (newData === null) {
-      this._eventsModel.removeEvent(oldData.id);
-      this._updateEvents();
+      // this._eventsModel.removeEvent(oldData.id);
+      // this._updateEvents();
+
+      this._api.deleteEvent(oldData.id)
+        .then(() => {
+          this._eventsModel.removeEvent(oldData.id);
+          this._updateEvents();
+        })
+        .catch(() => {
+          eventController.shake();
+        });
     } else {
       this._api.updateEvent(oldData.id, newData)
         .then((eventModel) => {
@@ -182,6 +195,9 @@ class TripController {
             eventController.render(eventModel, mode);
             this._updateEvents();
           }
+        })
+        .catch(() => {
+          eventController.shake();
         });
     }
   }
