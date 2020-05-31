@@ -5,13 +5,10 @@ import {getEventsPerDay} from '../utils/common.js';
 import {getEventsByFilter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
 
-const DEFAULT_SORT_TYPE = SortType.EVENT;
+const getDuration = (startDate, endDate) => {
+  const firstDate = new Date(startDate);
+  const secondDate = new Date(endDate);
 
-const getDuration = (firstDate, secondDate) => {
-  if (typeof firstDate === `string` && typeof secondDate === `string`) {
-    firstDate = new Date(secondDate);
-    secondDate = new Date(secondDate);
-  }
   return secondDate.getTime() - firstDate.getTime();
 };
 
@@ -43,7 +40,7 @@ class TripEvents {
     this._events = [];
     this._filteredEvents = [];
     // this._structuredEvents = {};
-    this._currentSortType = DEFAULT_SORT_TYPE;
+    this._currentSortType = SortType.EVENT;
     this._activeFilterType = FilterType.EVERYTHING;
 
     // this._dataChangeHandlers = [];
