@@ -1,9 +1,7 @@
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {formatType, capitalizeFirstLetter, getId} from "../utils/common.js";
 import {createElement} from '../utils/render.js';
-import AbstractSmartComponent from "./abstract-smart-component.js";
-
 import flatpickr from "flatpickr";
-
 import "flatpickr/dist/flatpickr.min.css";
 
 const DEFAULT_TYPE = `Bus`;
@@ -69,14 +67,20 @@ const createDestinationsTemplate = (destinations, eventDestination) => {
 
 const createEventDetailsTemplate = (offers, chosenOffers, description, photos) => {
 
-  const offersSectionTemplate = offers ?
-    /* html */
-    `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-      <div class="event__available-offers">
-        ${creareOffersTemplate(offers, chosenOffers)}
-      </div>
-    </section>` : ``;
+  let offersSectionTemplate = ``;
+
+  if (offers) {
+    if (offers.offers.length > 0) {
+      offersSectionTemplate =
+        /* html */
+        `<section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <div class="event__available-offers">
+            ${creareOffersTemplate(offers, chosenOffers)}
+          </div>
+        </section>`;
+    }
+  }
 
   const destinationSectionTemplate = !!description && !!photos ?
     /* html */
@@ -90,7 +94,7 @@ const createEventDetailsTemplate = (offers, chosenOffers, description, photos) =
       </div>
     </section>` : ``;
 
-  const template = !!offers || (!!description && !!photos) ?
+  const template = (!!offers || (!!description && !!photos)) ?
     /* html */
     `<section class="event__details">
       ${offersSectionTemplate}
@@ -132,8 +136,6 @@ const createEventFormTemplate = (event, information, offers, destinationsList) =
   if (!!type && !!destination) {
     eventPhotos = info ? info.photos : information.photos;
     eventDescription = info ? info.description : information.description;
-    // eventPhotos = info.photos ? info.photos : information.photos;
-    // eventDescription = info.description ? info.description : information.description;
   }
 
   return (
@@ -224,6 +226,8 @@ class EventForm extends AbstractSmartComponent {
 
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
+    this._rollUpButtonHandler = null;
+    this._changeStartDateHandler = null;
     this._changeTypeHandler = null;
     this._changeDestinationHandler = null;
 
@@ -246,6 +250,8 @@ class EventForm extends AbstractSmartComponent {
   recoverListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setRollUpButtonHandler(this._rollUpButtonHandler);
+    this.setChangeStartDateHandler(this._changeStartDateHandler);
     this.setChangeTypeHandlers(this._changeTypeHandler);
     this.setChangeDestinationHandler(this._changeDestinationHandler);
   }
@@ -283,6 +289,18 @@ class EventForm extends AbstractSmartComponent {
       .addEventListener(`click`, this._deleteButtonClickHandler);
   }
 
+  setRollUpButtonHandler(handler) {
+    this._rollUpButtonHandler = handler;
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._rollUpButtonHandler);
+  }
+
+  setChangeStartDateHandler(handler) {
+    this._changeStartDateHandler = handler;
+    this.getElement().querySelector(`[name="event-start-time"]`)
+      .addEventListener(`change`, this._changeStartDateHandler);
+  }
+
   setChangeTypeHandlers(handler) {
     this._changeTypeHandler = handler;
     this.getElement().querySelectorAll(`.event__type-label`).forEach((it) => {
@@ -294,6 +312,25 @@ class EventForm extends AbstractSmartComponent {
     this._changeDestinationHandler = handler;
     this.getElement().querySelector(`.event__input--destination`)
       .addEventListener(`change`, this._changeDestinationHandler);
+  }
+
+  onStartDateChange(minimumDate, currentDate, element) {
+    const getDefaultDate = (minDate, actualDate) => {
+      if (minDate > actualDate) {
+        return minDate;
+      }
+      return actualDate;
+    };
+
+    this._flatpickr = flatpickr(element, {
+      minDate: minimumDate,
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      dateFormat: `Z`,
+      altInput: true,
+      minuteIncrement: 1,
+      defaultDate: getDefaultDate(minimumDate, currentDate)
+    });
   }
 
   onTypeChange(type, offers) {
@@ -322,6 +359,16 @@ class EventForm extends AbstractSmartComponent {
     this._updateDetails();
   }
 
+  setSaveButtonText(text) {
+    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+    saveButton.textContent = text;
+  }
+
+  setDeleteButtonText(text) {
+    const deleteButton = this.getElement().querySelector(`.event__reset-btn`);
+    deleteButton.textContent = text;
+  }
+
   _updateDetails() {
     const formElement = this.getElement().querySelector(`form`);
     const detailsElement = formElement.querySelector(`.event__details`);
@@ -334,7 +381,9 @@ class EventForm extends AbstractSmartComponent {
     const photos = this._info ? this._info.photos : null;
 
     const eventDetailsElement = createElement(createEventDetailsTemplate(this._offers, null, description, photos));
-    formElement.appendChild(eventDetailsElement);
+    if (eventDetailsElement) {
+      formElement.appendChild(eventDetailsElement);
+    }
   }
 
   _applyFlatpickr() {
@@ -350,7 +399,6 @@ class EventForm extends AbstractSmartComponent {
         dateFormat: `Z`,
         altInput: true,
         minuteIncrement: 1,
-        // allowInput: true,
         defaultDate: date || `today`
       });
     };

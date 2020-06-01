@@ -1,25 +1,22 @@
-import {render, remove} from '../utils/render.js';
-import {show, hide} from '../utils/common.js';
-
 import NoEventsComponent from '../components/no-events.js';
 import SortingComponent from '../components/sorting.js';
 import LoadingComponent from '../components/loading.js';
 import TripEventsListComponent, {SORTED_ARRRAY_KEY} from '../components/trip-events-list.js';
-
 import TripEventController, {Mode as EventControllerMode, EmptyEvent} from './trip-event.js';
-
-const sortedEventsKey = SORTED_ARRRAY_KEY;
+import {RenderPosition, render, remove} from '../utils/render.js';
+import {show, hide} from '../utils/common.js';
 
 const newEventButtonElement = document.querySelector(`.trip-main__event-add-btn`);
 
 class TripController {
-  constructor(container, eventsModel, destinationsModel, offersModel, api) {
+  constructor(container, filtersController, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._api = api;
 
+    this._filtersController = filtersController;
     this._eventControllers = [];
 
     this._noEventsComponent = new NoEventsComponent();
@@ -34,7 +31,6 @@ class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
-    // this._onFilterChange = this._onFilterChange.bind(this);
     this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
 
     this._sortingComponent.setSortTypeChangeHandler(this._onSortTypeChange);
@@ -64,11 +60,11 @@ class TripController {
     }
 
     if (areEventsAbsent && !this._creatingEvent) {
-      render(this._container, this._noEventsComponent, `beforeend`);
+      render(this._container, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(container, this._sortingComponent, `afterend`);
+    render(container, this._sortingComponent, RenderPosition.AFTEREND);
 
     this._eventControllers = this._renderEvents(events, this._onDataChange, this._onViewChange);
 
@@ -76,10 +72,11 @@ class TripController {
   }
 
   renderLoadingMessage() {
-    render(this._container, this._loadingComponent, `beforeend`);
+    render(this._container, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   createEvent() {
+    this._newEventButtonElement.setAttribute(`disabled`, `disabled`);
 
     this._onViewChange();
 
@@ -89,7 +86,7 @@ class TripController {
         remove(this._tripEventsListComponent);
       }
       this._tripEventsListComponent = new TripEventsListComponent(this._eventsModel.getFilteredEvents());
-      render(this._container, this._tripEventsListComponent, `beforeend`);
+      render(this._container, this._tripEventsListComponent, RenderPosition.BEFOREEND);
     }
 
     const eventsListElement = document.querySelector(`.trip-events__list`);
@@ -112,7 +109,7 @@ class TripController {
 
     this._tripEventsListComponent = new TripEventsListComponent(events);
 
-    render(this._container, this._tripEventsListComponent, `beforeend`);
+    render(this._container, this._tripEventsListComponent, RenderPosition.BEFOREEND);
 
     const tripDayElements = document.querySelectorAll(`.trip-days__item`);
 
@@ -122,8 +119,8 @@ class TripController {
 
         const eventsListElement = element.querySelector(`.trip-events__list`);
 
-        if (events.hasOwnProperty(sortedEventsKey)) {
-          events[sortedEventsKey].forEach((event) => {
+        if (events.hasOwnProperty(SORTED_ARRRAY_KEY)) {
+          events[SORTED_ARRRAY_KEY].forEach((event) => {
             eventControllers.push(renderEvent(event, eventsListElement));
           });
         } else {
@@ -157,10 +154,15 @@ class TripController {
     }
   }
 
+  _removeCreatingEvent() {
+    this._creatingEvent = null;
+    this._newEventButtonElement.removeAttribute(`disabled`);
+  }
+
   _onViewChange() {
     if (this._creatingEvent) {
       this._creatingEvent.destroy();
-      this._creatingEvent = null;
+      this._removeCreatingEvent();
     }
     this._eventControllers.forEach((it) => {
       it.setDefaultView();
@@ -169,11 +171,11 @@ class TripController {
 
   _onDataChange(eventController, oldData, newData, mode = EventControllerMode.EDIT) {
     if (this._eventsModel.getEvents().length === 0) {
-      render(this._container.querySelector(`h2`), this._sortingComponent, `afterend`);
+      render(this._container.querySelector(`h2`), this._sortingComponent, RenderPosition.AFTEREND);
     }
 
     if (oldData === EmptyEvent) {
-      this._creatingEvent = null;
+      this._removeCreatingEvent();
       if (newData === null) {
         eventController.destroy();
       } else {
@@ -215,22 +217,20 @@ class TripController {
     this._eventsModel.setEvents(this._eventsModel.getEvents(), this._sortingComponent.getSortType());
     this._updateEvents();
 
-    this._creatingEvent = null;
+    this._removeCreatingEvent();
   }
-
-  // _onFilterChange() {
-  //   this._eventsModel.setEvents(this._eventsModel.getEvents(), this._sortingComponent.getSortType());
-  //   this._updateEvents();
-
-  //   this._creatingEvent = null;
-  // }
 
   _onNewEventButtonClick() {
     if (this._creatingEvent) {
       return;
-    } else {
-      this.createEvent();
     }
+
+    this._sortingComponent.setSortType();
+    this._sortingComponent.rerender();
+    this._eventsModel.setFilter();
+    this._filtersController.getFiltersСomponents().rerender();
+
+    this.createEvent();
   }
 }
 

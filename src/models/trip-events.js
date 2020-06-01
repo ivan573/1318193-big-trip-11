@@ -1,9 +1,6 @@
 
-import {getDuration} from '../utils/common.js';
-
+import {getDuration, getEventsPerDay} from '../utils/common.js';
 import {SortType} from '../components/sorting.js';
-
-import {getEventsPerDay} from '../utils/common.js';
 import {getEventsByFilter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
 
@@ -53,7 +50,7 @@ class TripEvents {
     this._updateEvents(Array.from(events), sortType);
   }
 
-  setFilter(filterType) {
+  setFilter(filterType = SortType.EVENT) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
   }

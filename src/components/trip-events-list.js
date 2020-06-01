@@ -1,5 +1,4 @@
 import AbstractComponent from "./abstract-component.js";
-
 import moment from "moment";
 
 const SORTED_ARRRAY_KEY = `sorted`;

@@ -1,6 +1,8 @@
 import {getEventTitle, getTime, getStringDuration} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
+const MAX_OFFERS = 3;
+
 const createOffersTemplate = (offers) => {
   let template = ``;
 
@@ -8,7 +10,7 @@ const createOffersTemplate = (offers) => {
     return template;
   }
 
-  offers.forEach((it) => (
+  offers.slice(0, MAX_OFFERS).forEach((it) => (
     template = template.concat(
     /* html */
         `<li class="event__offer">
