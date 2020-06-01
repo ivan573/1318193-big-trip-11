@@ -18,10 +18,14 @@ class TripEvent {
 
   toRAW() {
     return {
-      "base_price": this.cost,
+      "base_price": Number(this.cost),
       "date_from": new Date(this.startDate).toISOString(),
       "date_to": new Date(this.endDate).toISOString(),
-      "destination": this.destination,
+      "destination": {
+        "description": this.info.description,
+        "name": this.destination,
+        "pictures": this.info.photos
+      },
       "is_favorite": this.isFavorite,
       "offers": this.extraOffers,
       "type": this.type.toLowerCase()

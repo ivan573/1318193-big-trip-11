@@ -1,3 +1,4 @@
+import {show, hide} from '../utils/common.js';
 import {createElement} from '../utils/render.js';
 
 class AbstractComponent {
@@ -23,6 +24,14 @@ class AbstractComponent {
 
   removeElement() {
     this._element = null;
+  }
+
+  show() {
+    show(this._element);
+  }
+
+  hide() {
+    hide(this._element);
   }
 }
 

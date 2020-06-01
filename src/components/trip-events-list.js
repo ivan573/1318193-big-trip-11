@@ -35,7 +35,7 @@ const createTripDaysTemplate = (structuredEvents) => {
       template = createTripDay();
     } else {
       const date = structuredEvents[day][0].startDate;
-      template += createTripDay(date, day) + `\n`;
+      template = template.concat(createTripDay(date, day), `\n`);
     }
   }
 

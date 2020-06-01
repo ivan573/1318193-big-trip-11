@@ -13,10 +13,6 @@ const EventTypes = {
   activity: [`check-in`, `sightseeing`, `restaurant`]
 };
 
-// const getId = (title) => {
-//   return `event-offer-${title.replace(/\s+/g, ``).toLowerCase()}`;
-// };
-
 const creareOffersTemplate = (offers, chosenOffers) => {
 
   let template = ``;
@@ -31,16 +27,17 @@ const creareOffersTemplate = (offers, chosenOffers) => {
 
   if (offers) {
     offers.offers.forEach((it) => {
-      template +=
+      template = template.concat(
       /* html */
-      `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${getId(it.title)}-1" type="checkbox" name="${getId(it.title)}" ${setChecked(it)}>
-        <label class="event__offer-label" for="${getId(it.title)}-1">
-          <span class="event__offer-title">${it.title}</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
-        </label>
-      </div>` + `\n`;
+          `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="${getId(it.title)}-1" type="checkbox" name="${getId(it.title)}" ${setChecked(it)}>
+            <label class="event__offer-label" for="${getId(it.title)}-1">
+            <span class="event__offer-title">${it.title}</span>
+              &plus;
+              &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+            </label>
+          </div>\n`
+      );
     });
   }
 
@@ -52,7 +49,7 @@ const createPhotosTemplate = (photos) => {
 
   if (photos) {
     photos.forEach((it) => {
-      template += /* html */ `<img class="event__photo" src="${it.src}" alt="${it.description}"></img>` + `\n`;
+      template = template.concat(/* html */`<img class="event__photo" src="${it.src}" alt="${it.description}"></img>\n`);
     });
   }
 
@@ -61,10 +58,10 @@ const createPhotosTemplate = (photos) => {
 
 const createDestinationsTemplate = (destinations, eventDestination) => {
 
-  let template = /* html */ `<option ${!eventDestination ? `selected` : ``} disabled>Pick a destination</option>` + `\n`;
+  let template = /* html */ `<option ${!eventDestination ? `selected` : ``} disabled>Pick a destination</option>\n`;
 
   destinations.forEach((it) => {
-    template += /* html */ `<option value="${it}" ${it === eventDestination ? `selected` : ``}>${it}</option>` + `\n`;
+    template = template.concat(/* html */ `<option value="${it}" ${it === eventDestination ? `selected` : ``}>${it}</option>\n`);
   });
 
   return template;
@@ -114,12 +111,13 @@ const createEvetTypeListTemplate = (eventType, types) => {
   };
 
   types.forEach((it) => {
-    template +=
-      /* html */
-      `<div class="event__type-item">
-        <input id="event-type-${it}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it}" ${setChecked(it)}>
-        <label class="event__type-label  event__type-label--${it}" for="event-type${it}-1">${capitalizeFirstLetter(it)}</label>
-      </div>` + `\n`;
+    template = template.concat(
+        /* html */
+        `<div class="event__type-item">
+          <input id="event-type-${it}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it}" ${setChecked(it)}>
+          <label class="event__type-label  event__type-label--${it}" for="event-type${it}-1">${capitalizeFirstLetter(it)}</label>
+        </div>\n`
+    );
   });
 
   return template;
@@ -131,9 +129,11 @@ const createEventFormTemplate = (event, information, offers, destinationsList) =
   let eventPhotos = null;
   let eventDescription = null;
 
-  if (event.type && event.destination) {
-    eventPhotos = info.photos ? info.photos : information.photos;
-    eventDescription = info.description ? info.description : information.description;
+  if (!!type && !!destination) {
+    eventPhotos = info ? info.photos : information.photos;
+    eventDescription = info ? info.description : information.description;
+    // eventPhotos = info.photos ? info.photos : information.photos;
+    // eventDescription = info.description ? info.description : information.description;
   }
 
   return (
@@ -224,12 +224,8 @@ class EventForm extends AbstractSmartComponent {
 
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
-    // this._addToFavoriteHandler = null;
     this._changeTypeHandler = null;
     this._changeDestinationHandler = null;
-
-    // this._changePriceHandler = null;
-    // this._changeStartDateHandler = null; // test
 
     this._applyFlatpickr();
   }
@@ -245,14 +241,6 @@ class EventForm extends AbstractSmartComponent {
     }
 
     super.removeElement();
-  }
-
-  setInfo(info) {
-    this._info = info;
-  }
-
-  setOffers(offers) {
-    this._offers = offers;
   }
 
   recoverListeners() {
@@ -273,6 +261,14 @@ class EventForm extends AbstractSmartComponent {
     const formData = new FormData(form);
 
     return formData;
+  }
+
+  getInfo() {
+    return this._info;
+  }
+
+  getOffers() {
+    return this._offers;
   }
 
   setSubmitHandler(handler) {

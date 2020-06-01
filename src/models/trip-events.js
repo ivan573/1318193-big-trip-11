@@ -1,16 +1,11 @@
 
+import {getDuration} from '../utils/common.js';
+
 import {SortType} from '../components/sorting.js';
 
 import {getEventsPerDay} from '../utils/common.js';
 import {getEventsByFilter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
-
-const getDuration = (startDate, endDate) => {
-  const firstDate = new Date(startDate);
-  const secondDate = new Date(endDate);
-
-  return secondDate.getTime() - firstDate.getTime();
-};
 
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = {
@@ -39,11 +34,9 @@ class TripEvents {
   constructor() {
     this._events = [];
     this._filteredEvents = [];
-    // this._structuredEvents = {};
     this._currentSortType = SortType.EVENT;
     this._activeFilterType = FilterType.EVERYTHING;
 
-    // this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
@@ -55,10 +48,6 @@ class TripEvents {
     this._filteredEvents = getEventsByFilter(this._events, this._activeFilterType);
     return getSortedEvents(this._filteredEvents, this._currentSortType);
   }
-
-  // getStructuredEvents() {
-  //   return this._structuredEvents;
-  // }
 
   setEvents(events, sortType) {
     this._updateEvents(Array.from(events), sortType);
@@ -97,11 +86,6 @@ class TripEvents {
     this._updateEvents([].concat(event, this._events));
   }
 
-  // вызывается только в контроллере фильтров, где бесполезен
-  // setDataChangeHandler(handler) {
-  //   this._dataChangeHandlers.push(handler);
-  // }
-
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
   }
@@ -115,9 +99,6 @@ class TripEvents {
     this._currentSortType = newSortType;
 
     this._events = events;
-    // this._structuredEvents = getSortedEvents(this._events, this._currentSortType);
-
-    // this._callHandlers(this._dataChangeHandlers);
   }
 }
 

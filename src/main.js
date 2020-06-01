@@ -1,4 +1,6 @@
 import API from "./api.js";
+
+import StatisticsComponent from "./components/statistics.js";
 import MenuComponent from './components/menu.js';
 
 import FiltersController from './controllers/filters.js';
@@ -10,10 +12,6 @@ import OffersModel from "./models/offers.js";
 
 import {render} from './utils/render.js';
 
-// import {generateEvents} from './mock/trip-events.js';
-
-// const EVENTS_COUNT = 3; // 15;
-
 const AUTHORIZATION = `Basic h3770s3rv3rh0wru`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
@@ -22,13 +20,13 @@ const api = new API(END_POINT, AUTHORIZATION);
 const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-// const tripEvents = generateEvents(EVENTS_COUNT);
 const eventsModel = new EventsModel();
-// eventsModel.setEvents(tripEvents);
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-render(tripControlsElement.querySelector(`h2`), new MenuComponent());
+const menuComponent = new MenuComponent();
+
+render(tripControlsElement.querySelector(`h2`), menuComponent, `afterend`);
 const filtersController = new FiltersController(tripControlsElement, eventsModel);
 filtersController.render();
 
@@ -38,18 +36,39 @@ tripController.renderLoadingMessage();
 
 const loadPromises = [
   api.getDestinations()
-  .then((destinations) => {
-    destinationsModel.setDestinations(destinations);
-  }),
+    .then((destinations) => {
+      destinationsModel.setDestinations(destinations);
+    }),
   api.getOffers()
-  .then((offers) => {
-    offersModel.setOffers(offers);
-  }),
+    .then((offers) => {
+      offersModel.setOffers(offers);
+    }),
   api.getEvents()
-  .then((events) => {
-    eventsModel.setEvents(events);
-  })
+    .then((events) => {
+      eventsModel.setEvents(events);
+    })
 ];
 
-Promise.all(loadPromises)
-  .then(() => tripController.render());
+Promise.all(loadPromises).then(() => {
+  tripController.render();
+});
+
+const statisticsComponent = new StatisticsComponent(eventsModel);
+render(tripEventsElement, statisticsComponent, `afterend`);
+
+statisticsComponent.hide();
+
+menuComponent.setOnChange((menuItem) => {
+  switch (menuItem) {
+    case `Table`:
+      statisticsComponent.hide();
+      tripController.show();
+      menuComponent.setActiveItem(`Table`);
+      break;
+    case `Stats`:
+      tripController.hide();
+      statisticsComponent.show();
+      menuComponent.setActiveItem(`Stats`);
+      break;
+  }
+});

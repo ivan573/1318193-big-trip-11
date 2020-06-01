@@ -1,4 +1,5 @@
 import {render, remove} from '../utils/render.js';
+import {show, hide} from '../utils/common.js';
 
 import NoEventsComponent from '../components/no-events.js';
 import SortingComponent from '../components/sorting.js';
@@ -40,6 +41,14 @@ class TripController {
     this._eventsModel.setFilterChangeHandler(this._onSortTypeChange);
 
     this._newEventButtonElement.addEventListener(`click`, this._onNewEventButtonClick);
+  }
+
+  show() {
+    show(this._container);
+  }
+
+  hide() {
+    hide(this._container);
   }
 
   render() {
@@ -149,6 +158,10 @@ class TripController {
   }
 
   _onViewChange() {
+    if (this._creatingEvent) {
+      this._creatingEvent.destroy();
+      this._creatingEvent = null;
+    }
     this._eventControllers.forEach((it) => {
       it.setDefaultView();
     });
@@ -166,9 +179,8 @@ class TripController {
       } else {
         this._api.createEvent(newData)
           .then((eventModel) => {
-            this._tasksModel.addTask(eventModel);
+            this._eventsModel.addEvent(eventModel);
             eventController.render(eventModel, EventControllerMode.DEFAULT);
-            // this.__eventControllers = [].concat(eventController, this._eventControllers);
             this._updateEvents();
           })
           .catch(() => {
@@ -176,9 +188,6 @@ class TripController {
           });
       }
     } else if (newData === null) {
-      // this._eventsModel.removeEvent(oldData.id);
-      // this._updateEvents();
-
       this._api.deleteEvent(oldData.id)
         .then(() => {
           this._eventsModel.removeEvent(oldData.id);
