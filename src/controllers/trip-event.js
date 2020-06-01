@@ -42,13 +42,15 @@ const getChosenOffers = (formData, offers) => {
   return chosenOffers;
 };
 
-const parseFormData = (formData, offers) => {
+const parseFormData = (formData, info, offers) => {
   return new TripEventModel({
     "base_price": formData.get(`event-price`),
     "date_from": formData.get(`event-start-time`),
     "date_to": formData.get(`event-end-time`),
     "destination": {
-      "name": formData.get(`event-destination`)
+      "description": info.description,
+      "name": formData.get(`event-destination`),
+      "pictures": info.photos
     },
     "is_favorite": (formData.get(`event-favorite`) === `on`),
     "offers": getChosenOffers(formData, offers),
@@ -76,10 +78,9 @@ class TripEventController {
     const oldEventFormComponent = this._eventFormComponent;
     this._mode = mode;
 
-    const info = this._destinationsModel.getDestinationForName(event.destination);
+    const info = (event === EmptyEvent) ? null : this._destinationsModel.getDestinationForName(event.destination);
     const offers = (event === EmptyEvent) ? null : this._offersModel.getOfferForType(event.type);
     const destinationsList = this._destinationsModel.getDestinationsList();
-
 
     this._tripEventComponent = new TripEventComponent(event);
     this._eventFormComponent = new EventFormComponent(event, info, offers, destinationsList);
@@ -107,7 +108,7 @@ class TripEventController {
       evt.preventDefault();
 
       const formData = this._eventFormComponent.getData();
-      const data = parseFormData(formData, this._eventFormComponent._offers); // исправить
+      const data = parseFormData(formData, this._eventFormComponent.getInfo(), this._eventFormComponent.getOffers());
 
       if (Object.values(data).some((value) => value === null) || data.startDate > data.endDate) {
         return;

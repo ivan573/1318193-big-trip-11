@@ -1,5 +1,12 @@
 import AbstractComponent from "./abstract-component.js";
 
+const MenuItem = {
+  TABLE: `Table`,
+  STATS: `Stats`,
+};
+
+const ACTIVE_CLASS = `trip-tabs__btn--active`;
+
 const createMenuTemplate = () => {
   return (
     /* html */
@@ -14,6 +21,28 @@ class MenuTemplate extends AbstractComponent {
   getTemplate() {
     return createMenuTemplate();
   }
+
+  setActiveItem(menuItem) {
+    const items = this.getElement().querySelectorAll(`a`);
+
+    items.forEach((it) => {
+      if (it.textContent === menuItem) {
+        it.classList.add(ACTIVE_CLASS);
+      } else {
+        it.classList.remove(ACTIVE_CLASS);
+      }
+    });
+  }
+
+  setOnChange(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      const menuItem = evt.target.textContent;
+
+      handler(menuItem);
+    });
+  }
 }
 
-export {MenuTemplate as default};
+export {MenuTemplate as default, MenuItem};

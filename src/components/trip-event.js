@@ -1,4 +1,4 @@
-import {getEventTitle, getTime, getDuration} from '../utils/common.js';
+import {getEventTitle, getTime, getStringDuration} from '../utils/common.js';
 import AbstractComponent from "./abstract-component.js";
 
 const createOffersTemplate = (offers) => {
@@ -9,13 +9,14 @@ const createOffersTemplate = (offers) => {
   }
 
   offers.forEach((it) => (
-    template +=
+    template = template.concat(
     /* html */
-    `<li class="event__offer">
-      <span class="event__offer-title">${it.title}</span>
-      &plus;
-      &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
-    </li>` + `\n`
+        `<li class="event__offer">
+          <span class="event__offer-title">${it.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+        </li>\n`
+    )
   ));
   return template;
 };
@@ -38,7 +39,7 @@ const createTripEventTemplate = (event) => {
             &mdash;
             <time class="event__end-time" datetime="${endDate}">${getTime(endDate)}</time>
           </p>
-          <p class="event__duration">${getDuration(startDate, endDate)}</p>
+          <p class="event__duration">${getStringDuration(startDate, endDate)}</p>
         </div>
 
         <p class="event__price">

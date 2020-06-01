@@ -29,20 +29,11 @@ const createFiltersTemplate = (filters) => {
 
   return (
     /* html */
-    `<div class="trip-main__trip-controls  trip-controls">
-      <h2 class="visually-hidden">Switch trip view</h2>
-      <nav class="trip-controls__trip-tabs  trip-tabs">
-        <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
-        <a class="trip-tabs__btn" href="#">Stats</a>
-      </nav>
+    `<form class="trip-filters" action="#" method="get">
+      ${filterTemplates}
 
-      <h2 class="visually-hidden">Filter events</h2>
-      <form class="trip-filters" action="#" method="get">
-        ${filterTemplates}
-
-        <button class="visually-hidden" type="submit">Accept filter</button>
-      </form>
-    </div>`
+      <button class="visually-hidden" type="submit">Accept filter</button>
+    </form>`
   );
 };
 

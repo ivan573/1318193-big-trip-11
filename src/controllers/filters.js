@@ -12,10 +12,7 @@ class FilterController {
     this._activeFilterType = DEFAULT_FILTER_TYPE;
     this._filtersComponent = null;
 
-    // this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-
-    // this._eventsModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
@@ -43,10 +40,6 @@ class FilterController {
     this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
-
-  // _onDataChange() {
-  //   // this.render();
-  // }
 }
 
 export {FilterController as default};
