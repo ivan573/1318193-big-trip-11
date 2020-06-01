@@ -127,7 +127,7 @@ const getLongestTypes = (events) => {
     }
   });
 
-  for (let duration in durations) {
+  for (const duration in durations) {
     if (durations[duration]) {
       durations[duration] = Math.floor(durations[duration] / TimeUnits.MILLISECONDS_IN_A_SECOND / TimeUnits.SECONDS_IN_A_MINUTE / TimeUnits.MINUTES_IN_AN_HOUR);
     }
@@ -204,7 +204,7 @@ const renderMoneyChart = (moneyCtx, expenses) => {
   });
 };
 
-let renderTransportChart = (transportCtx, transportUsageCount) => {
+const renderTransportChart = (transportCtx, transportUsageCount) => {
   const {flyCount, driveCount, rideCount, sailCount} = transportUsageCount;
   return new Chart(transportCtx, {
     plugins: [ChartDataLabels],
