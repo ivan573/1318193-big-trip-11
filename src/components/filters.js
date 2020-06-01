@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const FILTER_ID_PREFIX = `filter-`;
 
@@ -37,11 +37,13 @@ const createFiltersTemplate = (filters) => {
   );
 };
 
-class Filters extends AbstractComponent {
+class Filters extends AbstractSmartComponent {
   constructor(filters) {
     super();
 
     this._filters = filters;
+
+    this._filterChangeHandler = null;
   }
 
   getTemplate() {
@@ -49,10 +51,15 @@ class Filters extends AbstractComponent {
   }
 
   setFilterChangeHandler(handler) {
+    this._filterChangeHandler = handler;
     this.getElement().addEventListener(`change`, (evt) => {
       const filterName = getFilterNameById(evt.target.id);
       handler(filterName);
     });
+  }
+
+  recoverListeners() {
+    this.setFilterChangeHandler(this._filterChangeHandler);
   }
 }
 

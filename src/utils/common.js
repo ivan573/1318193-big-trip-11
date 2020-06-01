@@ -53,18 +53,29 @@ const getDuration = (startDate, endDate) => {
 };
 
 const getStringDuration = (startDate, endDate) => {
+  const formatUnits = (units) => {
+    return units > 10 ? `${units}` : `0${units}`;
+  };
+
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   const duration = (end.setSeconds(0) - start.setSeconds(0));
+
   let minutes = Math.floor(duration / TimeUnits.MILLISECONDS_IN_A_SECOND / TimeUnits.SECONDS_IN_A_MINUTE);
   let hours = Math.floor(minutes / TimeUnits.MINUTES_IN_AN_HOUR);
+  const days = Math.floor(hours / TimeUnits.HOURS_IN_A_DAY);
+
   if (minutes < TimeUnits.MINUTES_IN_AN_HOUR) {
-    return minutes + `M`;
-  } else {
+    return `${formatUnits(minutes)}M`;
+  } if (hours < TimeUnits.HOURS_IN_A_DAY) {
     minutes = minutes % TimeUnits.MINUTES_IN_AN_HOUR;
-    return minutes === 0 ? hours + `H` : hours + `H ` + minutes + `M`;
+    return `${formatUnits(hours)}H ${formatUnits(minutes)}M`;
   }
+
+  minutes = minutes % TimeUnits.MINUTES_IN_AN_HOUR;
+  hours = hours % TimeUnits.HOURS_IN_A_DAY;
+  return `${formatUnits(days)}D ${formatUnits(hours)}H ${formatUnits(minutes)}M`;
 };
 
 const getEventsPerDay = (events) => {

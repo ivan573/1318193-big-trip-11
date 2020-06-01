@@ -1,12 +1,12 @@
-import {getId} from "../utils/common.js";
-import {render, replace, remove} from '../utils/render.js';
-
+import TripEventModel from "../models/trip-event.js";
 import TripEventComponent from '../components/trip-event.js';
 import EventFormComponent from '../components/event-form.js';
-
-import TripEventModel from "../models/trip-event.js";
+import {RenderPosition, render, replace, remove} from '../utils/render.js';
+import {getId} from "../utils/common.js";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
+
+const EVENT_FORM_ELEMENTS = [`input`, `select`, `button`];
 
 const Mode = {
   DEFAULT: `default`,
@@ -28,6 +28,24 @@ const EmptyEvent = {
   }
 };
 
+const Keys = {
+  type: `event-type`,
+  destination: `event-destination`,
+  startDate: `event-start-time`,
+  endDate: `event-end-time`
+};
+
+const ButtonText = {
+  defaultText: {
+    delete: `Delete`,
+    save: `Save`
+  },
+  processText: {
+    delete: `Deleting...`,
+    save: `Saving...`
+  }
+};
+
 const getChosenOffers = (formData, offers) => {
   const chosenOffers = [];
 
@@ -43,6 +61,10 @@ const getChosenOffers = (formData, offers) => {
 };
 
 const parseFormData = (formData, info, offers) => {
+  if (!info || !offers) {
+    return null;
+  }
+
   return new TripEventModel({
     "base_price": formData.get(`event-price`),
     "date_from": formData.get(`event-start-time`),
@@ -71,6 +93,7 @@ class TripEventController {
     this._eventFormComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._onFormClosure = this._onFormClosure.bind(this);
   }
 
   render(event, mode) {
@@ -104,19 +127,44 @@ class TripEventController {
       this._eventFormComponent.onDestinationChange(newInfo);
     });
 
+    this._eventFormComponent.setChangeStartDateHandler(() => {
+      const startDateElement = this._eventFormComponent.getElement().querySelector(`input[name=event-start-time]`);
+      const endDateElement = this._eventFormComponent.getElement().querySelector(`input[name=event-end-time]`);
+
+      const endDateMinimumValue = startDateElement.value;
+      const endDateCurrentValue = endDateElement.value;
+
+      this._eventFormComponent.onStartDateChange(endDateMinimumValue, endDateCurrentValue, endDateElement);
+    });
+
+    this._eventFormComponent.setRollUpButtonHandler(() => {
+      this._onFormClosure();
+    });
+
     this._eventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
 
-      const formData = this._eventFormComponent.getData();
-      const data = parseFormData(formData, this._eventFormComponent.getInfo(), this._eventFormComponent.getOffers());
+      this._eventFormComponent.setSaveButtonText(ButtonText.processText.save);
 
-      if (Object.values(data).some((value) => value === null) || data.startDate > data.endDate) {
+      const formData = this._eventFormComponent.getData();
+
+      this._disableForm();
+
+      if (!formData.has(Keys.type) || !formData.has(Keys.destination) || formData.get(Keys.startDate) > formData.get(Keys.endDate)) {
+        this.shake();
         return;
       }
+
+      const data = parseFormData(formData, this._eventFormComponent.getInfo(), this._eventFormComponent.getOffers());
+
       this._onDataChange(this, event, data, Mode.DEFAULT);
     });
 
-    this._eventFormComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, event, null));
+    this._eventFormComponent.setDeleteButtonClickHandler(() => {
+      this._disableForm();
+      this._eventFormComponent.setDeleteButtonText(ButtonText.processText.delete);
+      this._onDataChange(this, event, null);
+    });
 
     switch (mode) {
       case Mode.DEFAULT:
@@ -125,7 +173,7 @@ class TripEventController {
           replace(this._eventFormComponent, oldEventFormComponent);
           this._replaceEditToEvent();
         } else {
-          render(this._container, this._tripEventComponent, `beforeend`);
+          render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
         }
         break;
       case Mode.EDIT:
@@ -133,7 +181,7 @@ class TripEventController {
           replace(this._tripEventComponent, oldTripEventComponent);
           replace(this._eventFormComponent, oldEventFormComponent);
         } else {
-          render(this._container, this._eventFormComponent, `beforeend`);
+          render(this._container, this._eventFormComponent, RenderPosition.BEFOREEND);
         }
         break;
       case Mode.ADDING:
@@ -142,7 +190,7 @@ class TripEventController {
           remove(oldEventFormComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._eventFormComponent, `afterbegin`);
+        render(this._container, this._eventFormComponent);
         break;
     }
   }
@@ -166,6 +214,11 @@ class TripEventController {
     setTimeout(() => {
       this._eventFormComponent.getElement().style.animation = ``;
       this._tripEventComponent.getElement().style.animation = ``;
+
+      this._eventFormComponent.setSaveButtonText(ButtonText.defaultText.save);
+      this._eventFormComponent.setDeleteButtonText(ButtonText.defaultText.delete);
+
+      this._enableForm();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
@@ -185,16 +238,35 @@ class TripEventController {
     this._mode = Mode.DEFAULT;
   }
 
+  _onFormClosure() {
+    if (this._mode === Mode.ADDING) {
+      this._onDataChange(this, EmptyEvent, null);
+    }
+    this._replaceEditToEvent();
+  }
+
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, EmptyEvent, null);
-      }
-      this._replaceEditToEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      this._onFormClosure();
     }
+  }
+
+  _disableForm() {
+    EVENT_FORM_ELEMENTS.forEach((it) => {
+      this._eventFormComponent.getElement().querySelectorAll(`${it}`).forEach((element) => {
+        element.setAttribute(`disabled`, `disabled`);
+      });
+    });
+  }
+
+  _enableForm() {
+    EVENT_FORM_ELEMENTS.forEach((it) => {
+      this._eventFormComponent.getElement().querySelectorAll(`${it}`).forEach((element) => {
+        element.removeAttribute(`disabled`);
+      });
+    });
   }
 }
 

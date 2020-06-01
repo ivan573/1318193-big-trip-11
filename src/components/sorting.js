@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const SortType = {
   EVENT: `Event`,
@@ -14,7 +14,9 @@ const createSortingTemplate = () => {
 
       <div class="trip-sort__item  trip-sort__item--event">
         <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" checked>
-        <label class="trip-sort__btn" for="sort-event">Event</label>
+        <label class="trip-sort__btn" for="sort-event">
+        Event
+        </label>
       </div>
 
       <div class="trip-sort__item  trip-sort__item--time">
@@ -36,11 +38,13 @@ const createSortingTemplate = () => {
   );
 };
 
-class Sorting extends AbstractComponent {
+class Sorting extends AbstractSmartComponent {
   constructor() {
     super();
 
     this._currentSortType = SortType.EVENT;
+
+    this._sortTypeChangeHandler = null;
   }
 
   getTemplate() {
@@ -51,7 +55,13 @@ class Sorting extends AbstractComponent {
     return this._currentSortType;
   }
 
+  setSortType(sortType = SortType.EVENT) {
+    this._currentSortType = sortType;
+  }
+
   setSortTypeChangeHandler(handler) {
+    this._sortTypeChangeHandler = handler;
+
     this.getElement().addEventListener(`click`, (evt) => {
 
       if (evt.target.tagName !== `LABEL`) {
@@ -68,6 +78,10 @@ class Sorting extends AbstractComponent {
 
       handler(this._currentSortType);
     });
+  }
+
+  recoverListeners() {
+    this.setSortTypeChangeHandler(this._sortTypeChangeHandler);
   }
 }
 

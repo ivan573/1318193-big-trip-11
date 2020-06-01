@@ -42,4 +42,4 @@ const remove = (component) => {
   component.removeElement();
 };
 
-export {createElement, render, replace, remove};
+export {RenderPosition, createElement, render, replace, remove};

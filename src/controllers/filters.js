@@ -1,6 +1,6 @@
 import FiltersComponent from "../components/filters.js";
 import {FilterType} from "../const.js";
-import {render, replace} from "../utils/render.js";
+import {RenderPosition, render, replace} from "../utils/render.js";
 
 const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
 
@@ -32,8 +32,12 @@ class FilterController {
     if (oldComponent) {
       replace(this._filtersComponent, oldComponent);
     } else {
-      render(container, this._filtersComponent, `beforeend`);
+      render(container, this._filtersComponent, RenderPosition.BEFOREEND);
     }
+  }
+
+  getFiltersСomponents() {
+    return this._filtersComponent;
   }
 
   _onFilterChange(filterType) {

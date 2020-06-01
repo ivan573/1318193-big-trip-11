@@ -1,16 +1,12 @@
 import API from "./api.js";
-
 import StatisticsComponent from "./components/statistics.js";
 import MenuComponent, {MenuItem} from './components/menu.js';
-
 import FiltersController from './controllers/filters.js';
 import TripController from './controllers/trip-events-list.js';
-
 import EventsModel from "./models/trip-events.js";
 import DestinationsModel from "./models/destinations.js";
 import OffersModel from "./models/offers.js";
-
-import {render} from './utils/render.js';
+import {RenderPosition, render} from './utils/render.js';
 
 const AUTHORIZATION = `Basic h3770s3rv3rh0wru`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
@@ -26,11 +22,11 @@ const offersModel = new OffersModel();
 
 const menuComponent = new MenuComponent();
 
-render(tripControlsElement.querySelector(`h2`), menuComponent, `afterend`);
+render(tripControlsElement.querySelector(`h2`), menuComponent, RenderPosition.AFTEREND);
 const filtersController = new FiltersController(tripControlsElement, eventsModel);
 filtersController.render();
 
-const tripController = new TripController(tripEventsElement, eventsModel, destinationsModel, offersModel, api);
+const tripController = new TripController(tripEventsElement, filtersController, eventsModel, destinationsModel, offersModel, api);
 
 tripController.renderLoadingMessage();
 
@@ -54,7 +50,7 @@ Promise.all(loadPromises).then(() => {
 });
 
 const statisticsComponent = new StatisticsComponent(eventsModel);
-render(tripEventsElement, statisticsComponent, `afterend`);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 
 statisticsComponent.hide();
 
