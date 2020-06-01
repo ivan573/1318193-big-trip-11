@@ -1,7 +1,7 @@
 import API from "./api.js";
 
 import StatisticsComponent from "./components/statistics.js";
-import MenuComponent from './components/menu.js';
+import MenuComponent, {MenuItem} from './components/menu.js';
 
 import FiltersController from './controllers/filters.js';
 import TripController from './controllers/trip-events-list.js';
@@ -63,12 +63,12 @@ menuComponent.setOnChange((menuItem) => {
     case `Table`:
       statisticsComponent.hide();
       tripController.show();
-      menuComponent.setActiveItem(`Table`);
+      menuComponent.setActiveItem(MenuItem.TABLE);
       break;
     case `Stats`:
       tripController.hide();
       statisticsComponent.show();
-      menuComponent.setActiveItem(`Stats`);
+      menuComponent.setActiveItem(MenuItem.STATS);
       break;
   }
 });

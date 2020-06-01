@@ -45,4 +45,4 @@ class MenuTemplate extends AbstractComponent {
   }
 }
 
-export {MenuTemplate as default};
+export {MenuTemplate as default, MenuItem};

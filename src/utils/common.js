@@ -3,7 +3,8 @@ import moment from "moment";
 const TimeUnits = {
   MILLISECONDS_IN_A_SECOND: 1000,
   SECONDS_IN_A_MINUTE: 60,
-  MINUTES_IN_AN_HOUR: 60
+  MINUTES_IN_AN_HOUR: 60,
+  HOURS_IN_A_DAY: 24
 };
 
 const ID_PREFIX = `event-offer-`;
@@ -57,10 +58,10 @@ const getStringDuration = (startDate, endDate) => {
 
   const duration = (end.setSeconds(0) - start.setSeconds(0));
   let minutes = Math.floor(duration / TimeUnits.MILLISECONDS_IN_A_SECOND / TimeUnits.SECONDS_IN_A_MINUTE);
+  let hours = Math.floor(minutes / TimeUnits.MINUTES_IN_AN_HOUR);
   if (minutes < TimeUnits.MINUTES_IN_AN_HOUR) {
     return minutes + `M`;
   } else {
-    const hours = Math.floor(minutes / TimeUnits.MINUTES_IN_AN_HOUR);
     minutes = minutes % TimeUnits.MINUTES_IN_AN_HOUR;
     return minutes === 0 ? hours + `H` : hours + `H ` + minutes + `M`;
   }
