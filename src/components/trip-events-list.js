@@ -19,7 +19,7 @@ const createTripDay = (date, index) => {
       <ul class="trip-events__list">
       </ul>
     </li>`);
-}
+};
 
 const createTripDaysTemplate = (structuredEvents) => {
 
