@@ -2,7 +2,7 @@ import API from "./api.js";
 import StatisticsComponent from "./components/statistics.js";
 import MenuComponent, {MenuItem} from './components/menu.js';
 import FiltersController from './controllers/filters.js';
-import TripController from './controllers/trip-events-list.js';
+import TripController from './controllers/trip.js';
 import EventsModel from "./models/trip-events.js";
 import DestinationsModel from "./models/destinations.js";
 import OffersModel from "./models/offers.js";

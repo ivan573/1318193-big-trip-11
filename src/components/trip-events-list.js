@@ -3,8 +3,8 @@ import moment from "moment";
 
 const SORTED_ARRRAY_KEY = `sorted`;
 
-function createTripDay(date, index) {
-  const dayInfo = arguments.length === 0 ? `` : (
+const createTripDay = (date, index) => {
+  const dayInfo = (!date && !index) ? `` : (
     /* html */
     `<span class="day__counter">${index}</span>
     <time class="day__date" datetime="${date}">${moment(date).format(`MMM D`).toUpperCase()}</time>`

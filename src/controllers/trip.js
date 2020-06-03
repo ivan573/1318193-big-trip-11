@@ -31,12 +31,12 @@ class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
-    this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
+    this._newEventButtonClickHandler = this._newEventButtonClickHandler.bind(this);
 
     this._sortingComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._eventsModel.setFilterChangeHandler(this._onSortTypeChange);
 
-    this._newEventButtonElement.addEventListener(`click`, this._onNewEventButtonClick);
+    this._newEventButtonElement.addEventListener(`click`, this._newEventButtonClickHandler);
   }
 
   show() {
@@ -52,7 +52,7 @@ class TripController {
 
     const container = this._container.querySelector(`h2`);
     const events = this._eventsModel.getFilteredEvents();
-    const areEventsAbsent = Object.keys(events).length === 0;
+    const areEventsAbsent = this._eventsModel.getEvents().length === 0;
 
     if (this._loadingComponent) {
       remove(this._loadingComponent);
@@ -64,7 +64,9 @@ class TripController {
       return;
     }
 
-    render(container, this._sortingComponent, RenderPosition.AFTEREND);
+    if (!areEventsAbsent) {
+      render(container, this._sortingComponent, RenderPosition.AFTEREND);
+    }
 
     this._eventControllers = this._renderEvents(events, this._onDataChange, this._onViewChange);
 
@@ -92,8 +94,8 @@ class TripController {
     const eventsListElement = document.querySelector(`.trip-events__list`);
 
     this._creatingEvent = new TripEventController(eventsListElement, this._destinationsModel, this._offersModel, this._onDataChange, this._onViewChange);
-
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
+    this._creatingEvent.applyFlatpickr();
   }
 
   _renderEvents(events, onDataChange, onViewChange) {
@@ -107,6 +109,9 @@ class TripController {
 
     const eventControllers = [];
 
+    if (this._tripEventsListComponent) {
+      remove(this._tripEventsListComponent);
+    }
     this._tripEventsListComponent = new TripEventsListComponent(events);
 
     render(this._container, this._tripEventsListComponent, RenderPosition.BEFOREEND);
@@ -139,6 +144,9 @@ class TripController {
 
   _removeEvents() {
     this._eventControllers.forEach((it) => {
+      if (it.getMode() === EventControllerMode.EDIT) {
+        it.disableFlatpickr();
+      }
       it.destroy();
     });
     this._eventControllers = [];
@@ -146,43 +154,43 @@ class TripController {
 
   _updateEvents() {
     this._removeEvents();
-    remove(this._tripEventsListComponent);
     this._eventControllers = this._renderEvents(this._eventsModel.getFilteredEvents(), this._onDataChange, this._onViewChange);
-    if (this._eventControllers.length === 0) {
-      remove(this._sortingComponent);
+    if (this._eventsModel.getEvents().length === 0) {
       this.render();
+      remove(this._sortingComponent);
     }
   }
 
   _removeCreatingEvent() {
-    this._creatingEvent = null;
-    this._newEventButtonElement.removeAttribute(`disabled`);
+    if (this._creatingEvent) {
+      this._creatingEvent.disableFlatpickr();
+      this._creatingEvent = null;
+      this._newEventButtonElement.removeAttribute(`disabled`);
+    }
   }
 
   _onViewChange() {
-    if (this._creatingEvent) {
-      this._creatingEvent.destroy();
-      this._removeCreatingEvent();
-    }
     this._eventControllers.forEach((it) => {
       it.setDefaultView();
     });
   }
 
-  _onDataChange(eventController, oldData, newData, mode = EventControllerMode.EDIT) {
-    if (this._eventsModel.getEvents().length === 0) {
-      render(this._container.querySelector(`h2`), this._sortingComponent, RenderPosition.AFTEREND);
-    }
+  _onDataChange(eventController, oldData, newData) {
 
     if (oldData === EmptyEvent) {
       this._removeCreatingEvent();
       if (newData === null) {
+        if (this._eventsModel.getEvents().length === 0) {
+          render(this._container, this._noEventsComponent, RenderPosition.BEFOREEND);
+        }
         eventController.destroy();
       } else {
         this._api.createEvent(newData)
           .then((eventModel) => {
+            if (this._eventsModel.getEvents().length === 0) {
+              render(this._container.querySelector(`h2`), this._sortingComponent, RenderPosition.AFTEREND);
+            }
             this._eventsModel.addEvent(eventModel);
-            eventController.render(eventModel, EventControllerMode.DEFAULT);
             this._updateEvents();
           })
           .catch(() => {
@@ -203,7 +211,6 @@ class TripController {
         .then((eventModel) => {
           const isSuccess = this._eventsModel.updateEvent(oldData.id, eventModel);
           if (isSuccess) {
-            eventController.render(eventModel, mode);
             this._updateEvents();
           }
         })
@@ -220,7 +227,7 @@ class TripController {
     this._removeCreatingEvent();
   }
 
-  _onNewEventButtonClick() {
+  _newEventButtonClickHandler() {
     if (this._creatingEvent) {
       return;
     }

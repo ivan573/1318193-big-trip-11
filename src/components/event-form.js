@@ -11,6 +11,11 @@ const EventTypes = {
   activity: [`check-in`, `sightseeing`, `restaurant`]
 };
 
+const ButtonName = {
+  delete: `Delete`,
+  cancel: `Cancel`
+};
+
 const creareOffersTemplate = (offers, chosenOffers) => {
 
   let template = ``;
@@ -130,6 +135,9 @@ const createEvetTypeListTemplate = (eventType, types) => {
 const createEventFormTemplate = (event, information, offers, destinationsList) => {
   const {type, destination, startDate, endDate, cost, isFavorite, extraOffers, info} = event;
 
+
+  const deleteButtonName = event.id ? ButtonName.delete : ButtonName.cancel;
+
   let eventPhotos = null;
   let eventDescription = null;
 
@@ -193,7 +201,7 @@ const createEventFormTemplate = (event, information, offers, destinationsList) =
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
+            <button class="event__reset-btn" type="reset">${deleteButtonName}</button>
 
                       <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
                       <label class="event__favorite-btn" for="event-favorite-1">
@@ -222,7 +230,8 @@ class EventForm extends AbstractSmartComponent {
     this._offers = offers;
     this._destinationsList = destinationsList;
 
-    this._flatpickr = null;
+    this._startDateFlatpickr = null;
+    this._endDateFlatpickr = null;
 
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
@@ -230,8 +239,6 @@ class EventForm extends AbstractSmartComponent {
     this._changeStartDateHandler = null;
     this._changeTypeHandler = null;
     this._changeDestinationHandler = null;
-
-    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -259,7 +266,7 @@ class EventForm extends AbstractSmartComponent {
   rerender() {
     super.rerender();
 
-    this._applyFlatpickr();
+    this.applyFlatpickr();
   }
 
   getData() {
@@ -315,21 +322,14 @@ class EventForm extends AbstractSmartComponent {
   }
 
   onStartDateChange(minimumDate, currentDate, element) {
-    const getDefaultDate = (minDate, actualDate) => {
-      if (minDate > actualDate) {
-        return minDate;
-      }
-      return actualDate;
-    };
-
-    this._flatpickr = flatpickr(element, {
+    this._endDateFlatpickr = flatpickr(element, {
       minDate: minimumDate,
       enableTime: true,
       altFormat: `d/m/y H:i`,
       dateFormat: `Z`,
       altInput: true,
       minuteIncrement: 1,
-      defaultDate: getDefaultDate(minimumDate, currentDate)
+      defaultDate: minimumDate > currentDate ? minimumDate : currentDate
     });
   }
 
@@ -360,13 +360,48 @@ class EventForm extends AbstractSmartComponent {
   }
 
   setSaveButtonText(text) {
-    const saveButton = this.getElement().querySelector(`.event__save-btn`);
-    saveButton.textContent = text;
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
+    saveButtonElement.textContent = text;
   }
 
   setDeleteButtonText(text) {
-    const deleteButton = this.getElement().querySelector(`.event__reset-btn`);
-    deleteButton.textContent = text;
+    const deleteButtonElement = this.getElement().querySelector(`.event__reset-btn`);
+    deleteButtonElement.textContent = text;
+  }
+
+  applyFlatpickr() {
+    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
+
+    this._startDateFlatpickr = flatpickr(startDateElement, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      dateFormat: `Z`,
+      altInput: true,
+      minuteIncrement: 1,
+      defaultDate: this._event.startDate || `today`
+    });
+
+    this._endDateFlatpickr = flatpickr(endDateElement, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      dateFormat: `Z`,
+      altInput: true,
+      minuteIncrement: 1,
+      defaultDate: this._event.endDate || `today`
+    });
+  }
+
+  disableFlatpickr() {
+    if (this._startDateFlatpickr) {
+      this._startDateFlatpickr.destroy();
+      this._startDateFlatpickr = null;
+    }
+
+    if (this._endDateFlatpickr) {
+      this._endDateFlatpickr.destroy();
+      this._endDateFlatpickr = null;
+    }
   }
 
   _updateDetails() {
@@ -384,30 +419,6 @@ class EventForm extends AbstractSmartComponent {
     if (eventDetailsElement) {
       formElement.appendChild(eventDetailsElement);
     }
-  }
-
-  _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
-    }
-
-    const apply = (element, date) => {
-      this._flatpickr = flatpickr(element, {
-        enableTime: true,
-        altFormat: `d/m/y H:i`,
-        dateFormat: `Z`,
-        altInput: true,
-        minuteIncrement: 1,
-        defaultDate: date || `today`
-      });
-    };
-
-    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
-
-    apply(startDateElement, this._event.startDate);
-    apply(endDateElement, this._event.endDate);
   }
 }
 

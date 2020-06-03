@@ -2,6 +2,11 @@ import TripEvent from "./models/trip-event.js";
 import Destination from "./models/destination.js";
 import Offer from "./models/destination.js";
 
+const ResposeSatus = {
+  MIN: 200,
+  MAX: 300
+};
+
 const Method = {
   GET: `GET`,
   POST: `POST`,
@@ -10,7 +15,7 @@ const Method = {
 };
 
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= ResposeSatus.MIN && response.status < ResposeSatus.MAX) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);

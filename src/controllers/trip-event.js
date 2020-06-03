@@ -92,7 +92,7 @@ class TripEventController {
     this._tripEventComponent = null;
     this._eventFormComponent = null;
 
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._onFormClosure = this._onFormClosure.bind(this);
   }
 
@@ -110,7 +110,7 @@ class TripEventController {
 
     this._tripEventComponent.setEditButtonClickHandler(() => {
       this._replaceEventToEdit();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
+      document.addEventListener(`keydown`, this._escKeyDownHandler);
     });
 
     this._eventFormComponent.setChangeTypeHandlers((evt) => {
@@ -120,9 +120,9 @@ class TripEventController {
     });
 
     this._eventFormComponent.setChangeDestinationHandler((evt) => {
-      const options = evt.target.querySelectorAll(`option`);
+      const optionElements = evt.target.querySelectorAll(`option`);
       const selectedIndex = evt.target.options.selectedIndex;
-      const name = options[selectedIndex].value;
+      const name = optionElements[selectedIndex].value;
       const newInfo = this._destinationsModel.getDestinationForName(name);
       this._eventFormComponent.onDestinationChange(newInfo);
     });
@@ -189,7 +189,7 @@ class TripEventController {
           remove(oldTripEventComponent);
           remove(oldEventFormComponent);
         }
-        document.addEventListener(`keydown`, this._onEscKeyDown);
+        document.addEventListener(`keydown`, this._escKeyDownHandler);
         render(this._container, this._eventFormComponent);
         break;
     }
@@ -204,7 +204,7 @@ class TripEventController {
   destroy() {
     remove(this._eventFormComponent);
     remove(this._tripEventComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   shake() {
@@ -222,16 +222,30 @@ class TripEventController {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
+  getMode() {
+    return this._mode;
+  }
+
+  applyFlatpickr() {
+    this._eventFormComponent.applyFlatpickr();
+  }
+
+  disableFlatpickr() {
+    this._eventFormComponent.disableFlatpickr();
+  }
+
 
   _replaceEventToEdit() {
     this._onViewChange();
+    this._eventFormComponent.applyFlatpickr();
+
     replace(this._eventFormComponent, this._tripEventComponent);
     this._mode = Mode.EDIT;
   }
 
   _replaceEditToEvent() {
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._eventFormComponent.rerender();
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._eventFormComponent.disableFlatpickr();
     if (document.contains(this._eventFormComponent.getElement())) {
       replace(this._tripEventComponent, this._eventFormComponent);
     }
@@ -245,7 +259,7 @@ class TripEventController {
     this._replaceEditToEvent();
   }
 
-  _onEscKeyDown(evt) {
+  _escKeyDownHandler(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
