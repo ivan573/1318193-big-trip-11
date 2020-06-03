@@ -232,13 +232,6 @@ class EventForm extends AbstractSmartComponent {
 
     this._startDateFlatpickr = null;
     this._endDateFlatpickr = null;
-
-    this._submitHandler = null;
-    this._deleteButtonClickHandler = null;
-    this._rollUpButtonHandler = null;
-    this._changeStartDateHandler = null;
-    this._changeTypeHandler = null;
-    this._changeDestinationHandler = null;
   }
 
   getTemplate() {
@@ -252,21 +245,6 @@ class EventForm extends AbstractSmartComponent {
     }
 
     super.removeElement();
-  }
-
-  recoverListeners() {
-    this.setSubmitHandler(this._submitHandler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
-    this.setRollUpButtonHandler(this._rollUpButtonHandler);
-    this.setChangeStartDateHandler(this._changeStartDateHandler);
-    this.setChangeTypeHandlers(this._changeTypeHandler);
-    this.setChangeDestinationHandler(this._changeDestinationHandler);
-  }
-
-  rerender() {
-    super.rerender();
-
-    this.applyFlatpickr();
   }
 
   getData() {
@@ -285,40 +263,34 @@ class EventForm extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
-    this._submitHandler = handler;
     this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, this._submitHandler);
+      .addEventListener(`submit`, handler);
   }
 
   setDeleteButtonClickHandler(handler) {
-    this._deleteButtonClickHandler = handler;
     this.getElement().querySelector(`.event__reset-btn`)
-      .addEventListener(`click`, this._deleteButtonClickHandler);
+      .addEventListener(`click`, handler);
   }
 
   setRollUpButtonHandler(handler) {
-    this._rollUpButtonHandler = handler;
     this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, this._rollUpButtonHandler);
+      .addEventListener(`click`, handler);
   }
 
   setChangeStartDateHandler(handler) {
-    this._changeStartDateHandler = handler;
     this.getElement().querySelector(`[name="event-start-time"]`)
-      .addEventListener(`change`, this._changeStartDateHandler);
+      .addEventListener(`change`, handler);
   }
 
   setChangeTypeHandlers(handler) {
-    this._changeTypeHandler = handler;
     this.getElement().querySelectorAll(`.event__type-label`).forEach((it) => {
-      it.addEventListener(`click`, this._changeTypeHandler);
+      it.addEventListener(`click`, handler);
     });
   }
 
   setChangeDestinationHandler(handler) {
-    this._changeDestinationHandler = handler;
     this.getElement().querySelector(`.event__input--destination`)
-      .addEventListener(`change`, this._changeDestinationHandler);
+      .addEventListener(`change`, handler);
   }
 
   onStartDateChange(minimumDate, currentDate, element) {
